@@ -1,7 +1,7 @@
-import os
 import logging
 from services.ai.registry import get_provider
 from services.ai.models import AIResponse
+from core import settings
 
 logger = logging.getLogger(__name__)
 
@@ -10,15 +10,10 @@ class AIRouter:
     Router yang bertanggung jawab atas penentuan rute provider dan penanganan failover (fallback).
     """
     def __init__(self):
-        # Membaca primary provider dari env: prioritas ke PRIMARY_PROVIDER, lalu AI_PROVIDER, default mock
-        self.primary_name = os.getenv("PRIMARY_PROVIDER") or os.getenv("AI_PROVIDER") or "mock"
-        
-        # Membaca fallback provider dari env
-        self.fallback_name = os.getenv("FALLBACK_PROVIDER") or "mock"
-        
-        # Membaca flag penentu apakah fallback diaktifkan
-        enable_fallback_str = os.getenv("ENABLE_FALLBACK", "true").lower()
-        self.enable_fallback = enable_fallback_str in ("true", "1", "yes", "on")
+        # Menggunakan shared settings object dari core config
+        self.primary_name = settings.PRIMARY_PROVIDER
+        self.fallback_name = settings.FALLBACK_PROVIDER
+        self.enable_fallback = settings.ENABLE_FALLBACK
 
     def route_request(self, prompt: str) -> AIResponse:
         """

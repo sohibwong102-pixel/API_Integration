@@ -7,8 +7,8 @@
 # agar aplikasi tetap ringan, mudah dipelajari, dan langsung jalan tanpa instalasi tambahan.
 #
 # Cara Kerja:
-# Seluruh log keluhan dan hasil AI disimpan ke dalam berkas `storage/history.json`.
-# Berkas ini menyediakan fungsi untuk menulis data baru dan membaca semua riwayat.
+# Seluruh log keluhan dan hasil AI disimpan ke dalam berkas database JSON lokal
+# yang konfigurasinya dibaca dari centralized settings.
 # =====================================================================
 
 import os
@@ -16,15 +16,17 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any
+from core import settings, BASE_DIR
 
-# 🌐 MENETAPKAN PATH SECARA ABSOLUT
+# 🌐 MENETAPKAN PATH SECARA ABSOLUT DARI CENTRALIZED CONFIG
 # Penjelasan Pemula:
-# Menggunakan string path relatif (seperti "./history.json") bisa memicu bug jika kita
-# menjalankan program Python dari folder yang berbeda.
-# Di bawah ini, kita memakai `Path(__file__).resolve()` untuk mendeteksi letak berkas 
-# `local_storage.py` berada, lalu membuat file `history.json` tepat di folder yang sama.
-STORAGE_DIR = Path(__file__).resolve().parent
-DB_FILE = STORAGE_DIR / "history.json"
+# Menggunakan path dari settings yang di-resolve secara absolut dari root basis proyek
+# agar panggillan database aman dan konsisten di lingkungan manapun.
+DB_FILE_PATH = Path(settings.DB_STORAGE_PATH)
+if not DB_FILE_PATH.is_absolute():
+    DB_FILE = BASE_DIR / DB_FILE_PATH
+else:
+    DB_FILE = DB_FILE_PATH
 
 class LocalStorage:
     """
@@ -42,8 +44,8 @@ class LocalStorage:
         JSON-nya tidak kosong. Jika file JSON kosong atau belum dibuat, kode kita
         bisa crash saat mencoba membaca JSON. Fungsi ini mengamankannya.
         """
-        # 1. Pastikan folder penyimpanan (storage/) sudah dibuat
-        STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+        # 1. Pastikan folder penyimpanan sudah dibuat
+        DB_FILE.parent.mkdir(parents=True, exist_ok=True)
         
         # 2. Jika file history.json belum ada di komputer, buat baru berisi list kosong `[]`
         if not DB_FILE.exists():
@@ -61,6 +63,9 @@ class LocalStorage:
             
         Returns:
             dict: Objek data utuh yang baru saja disimpan (dilengkapi ID dan Waktu).
+            
+        Raises:
+            IOError: Jika ada kegagalan penulisan disk.
         """
         # Pastikan file database siap dipakai
         cls._initialize_db()
@@ -109,4 +114,3 @@ class LocalStorage:
             # Jika file JSON rusak, terhapus saat dibaca, atau error I/O lainnya,
             # kita tidak ingin aplikasi crash total. Kita kembalikan list kosong [] sebagai penyelamat.
             return []
-

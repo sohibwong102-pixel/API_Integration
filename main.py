@@ -40,6 +40,11 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api import router as api_router
+from core import settings
+
+# 🛡️ VALIDASI STARTUP KRITIS (Fail Fast)
+# Memastikan semua variabel lingkungan yang wajib untuk provider aktif telah dikonfigurasi dengan benar.
+settings.validate()
 
 # 🚀 INGERT-POINT: Inisialisasi Aplikasi FastAPI
 # FastAPI adalah framework Python modern, cepat (high-performance), untuk membuat API.
@@ -113,13 +118,13 @@ def read_root():
 if __name__ == "__main__":
     print("---------------------------------------------------------")
     print("Memulai server Operational Workflow API V1...")
-    print("Silakan buka browser dan akses http://127.0.0.1:8000/docs")
+    print(f"Silakan buka browser dan akses http://{settings.APP_HOST}:{settings.APP_PORT}/docs")
     print("---------------------------------------------------------")
     
     uvicorn.run(
         "main:app", 
-        host="127.0.0.1", 
-        port=8000, 
-        reload=True  # reload=True artinya server otomatis restart setiap kali Anda mengubah kode!
+        host=settings.APP_HOST, 
+        port=settings.APP_PORT, 
+        reload=settings.APP_ENV == "development"  # reload otomatis aktif jika di mode development
     )
 

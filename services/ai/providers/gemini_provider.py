@@ -1,14 +1,14 @@
-import os
 import requests
 from services.ai.base import BaseProvider
+from core import settings
 
 class GeminiProvider(BaseProvider):
     """
     Implementasi cloud AI Provider menggunakan Google Gemini REST API resmi.
     """
     def __init__(self):
-        self.api_key = os.getenv("GEMINI_API_KEY", "")
-        self.model = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+        self.api_key = settings.GEMINI_API_KEY
+        self.model = settings.GEMINI_MODEL
         
     def generate(self, prompt: str) -> str:
         if not self.api_key:

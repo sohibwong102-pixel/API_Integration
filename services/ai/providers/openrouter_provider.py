@@ -1,14 +1,14 @@
-import os
 import requests
 from services.ai.base import BaseProvider
+from core import settings
 
 class OpenRouterProvider(BaseProvider):
     """
     Implementasi cloud AI Provider menggunakan REST API OpenRouter.
     """
     def __init__(self):
-        self.api_key = os.getenv("OPENROUTER_API_KEY", "")
-        self.model = os.getenv("OPENROUTER_MODEL", "meta-llama/llama-3-8b-instruct:free")
+        self.api_key = settings.OPENROUTER_API_KEY
+        self.model = settings.OPENROUTER_MODEL
         
     def generate(self, prompt: str) -> str:
         if not self.api_key:

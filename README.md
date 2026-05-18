@@ -115,6 +115,9 @@ Berikut adalah peta struktur direktori bersih dan terisolasi dari proyek ini unt
 ```text
 summary_endpoint/
 ├── .venv/                  # Virtual Environment Python
+├── core/                   # ⚙️ Centralized Settings & Core System Setup
+│   ├── __init__.py         # Expose settings & basis direktori absolut
+│   └── config.py           # Kelas Settings (Runtime-Based Instance Config)
 ├── api/                    # Layer API & Request/Response Validator
 │   ├── __init__.py         # Inisialisasi package & export Router
 │   └── routes.py           # Endpoint FastAPI & Skema Pydantic
@@ -159,6 +162,12 @@ summary_endpoint/
 ---
 
 ## 📄 5. Penjelasan Setiap Berkas (File Explanation)
+
+### ⚙️ [core/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/core/) & [core/config.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/core/config.py)
+* **Peran:** Pusat Pengaturan & Konfigurasi Sistem Terpusat.
+* **Fungsi:** Mengadopsi arsitektur **Runtime-Based Instance Configuration**:
+  - **`config.py`**: Kelas `Settings` dinamis yang memuat variabel lingkungan dari berkas `.env` saat objek dibuat dan mengonversi properti (Host, Port, AI Provider, API Keys, DB Path) menjadi instance variables dengan dukungan *strict fail-fast validation* pada startup server.
+  - **`__init__.py`**: Mengekspos instansi tunggal (*singleton*) `settings` secara global untuk menjamin konsistensi pembacaan data di seluruh layer aplikasi.
 
 ### 1. [main.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/main.py)
 * **Peran:** Titik masuk utama server.
@@ -278,3 +287,4 @@ Pelacakan log perubahan besar dan migrasi arsitektur pada repositori:
 
 * 📂 **[HISTORY_IMPLEMENT/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/HISTORY_IMPLEMENT/)**
   * 📄 **[2026_05_18_modular_ai_router.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/HISTORY_IMPLEMENT/2026_05_18_modular_ai_router.md)**: Log dan analisis refaktorisasi penuh `services/` menjadi modul `ai/` multi-provider berbasis konfigurasi yang mendukung *auto-failover* mandiri.
+  * 📄 **[2026_05_18_runtime_config_instance.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/HISTORY_IMPLEMENT/2026_05_18_runtime_config_instance.md)**: Log implementasi konfigurasi berbasis instansi dinamis (*runtime-based instance config*) menggantikan pembacaan global `os.getenv` statis dengan validasi *strict fail-fast* pada inisialisasi kelas `Settings`.

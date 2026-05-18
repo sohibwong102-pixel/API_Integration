@@ -1,14 +1,14 @@
-import os
 import requests
 from services.ai.base import BaseProvider
+from core import settings
 
 class OllamaProvider(BaseProvider):
     """
     Implementasi local AI Provider menggunakan Ollama (misal model Qwen 2.5).
     """
     def __init__(self):
-        self.base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").rstrip("/")
-        self.model = os.getenv("OLLAMA_MODEL", "qwen2.5:1.5b")
+        self.base_url = settings.OLLAMA_BASE_URL
+        self.model = settings.OLLAMA_MODEL
         
     def generate(self, prompt: str) -> str:
         url = f"{self.base_url}/api/generate"

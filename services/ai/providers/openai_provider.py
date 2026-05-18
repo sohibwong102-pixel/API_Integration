@@ -1,14 +1,14 @@
-import os
 import requests
 from services.ai.base import BaseProvider
+from core import settings
 
 class OpenAIProvider(BaseProvider):
     """
     Implementasi cloud AI Provider menggunakan REST API OpenAI resmi.
     """
     def __init__(self):
-        self.api_key = os.getenv("OPENAI_API_KEY", "")
-        self.model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        self.api_key = settings.OPENAI_API_KEY
+        self.model = settings.OPENAI_MODEL
         
     def generate(self, prompt: str) -> str:
         if not self.api_key:
