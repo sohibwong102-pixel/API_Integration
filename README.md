@@ -328,6 +328,8 @@ Untuk memastikan proyek ini dapat dikembangkan dalam skala besar tanpa hambatan 
 Pelacakan log perubahan besar dan migrasi arsitektur pada repositori:
 
 - 📂 **[HISTORY_IMPLEMENT/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/HISTORY_IMPLEMENT/)**
-  - **2026_05_18_backend_architecture_refactoring.md** - Refaktorisasi konfigurasi dinamis & modular multi-provider AI.
-  - **2026_05_19_unified_base_dir_entrypoint.md** - Standardisasi pola impor variabel `BASE_DIR` via `core`.
-  - **2026_05_19_api_request_validation_hardening.md** - Pengerasan validasi data masukan API Pydantic.
+  - **2026_05_18**:
+    - **Refaktorisasi Config Dinamis & AI Router** (`2026_05_18_backend_architecture_refactoring.md`) - Memisahkan konfigurasi runtime dan mendukung failover penyedia AI otomatis.
+  - **2026_05_19**:
+    - **Pintu Impor Tunggal `BASE_DIR`** (`2026_05_19_unified_base_dir_entrypoint.md`) - Mengarahkan impor direktori utama lewat modul `core` untuk menghindari circular dependency.
+    - **Pencegahan Input Kosong & Hardening API** (`2026_05_19_api_request_validation_hardening.md`) - Menambahkan validasi Pydantic ketat untuk memotong spasi kosong, menghalangi input kosong, dan membatasi panjang payload.
