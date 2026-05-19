@@ -10,6 +10,7 @@
 # Di sini kita menggunakan Pydantic untuk memastikan data input/output aman & tervalidasi.
 # =====================================================================
 
+import uuid
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field, field_validator
 from typing import List, Dict, Any, Optional
@@ -113,21 +114,23 @@ def create_issue_summary(payload: IssueRequest):
     
     [ALUR LOGIKA POST REQUEST]:
     1. User mengirim JSON -> Pydantic `payload` (IssueRequest) memvalidasi strukturnya.
-    2. Program memanggil `IssueSummaryWorkflow.execute` (Otak Alur Bisnis).
-    3. Workflow memproses dan mengembalikan kamus (dictionary) hasil.
-    4. Program mengembalikan hasil tersebut dibungkus skema `IssueResponse`.
+    2. Program membuat request_id unik di boundary.
+    3. Program memanggil `IssueSummaryWorkflow.execute` (Otak Alur Bisnis) dengan request_id.
+    4. Workflow memproses dan mengembalikan kamus (dictionary) hasil.
+    5. Program mengembalikan hasil tersebut dibungkus skema `IssueResponse`.
     """
+    request_id = uuid.uuid4().hex
     try:
         # ─── LANGKAH 1: Eksekusi Alur Kerja (Workflow) ───
         # Di sinilah integrasi terjadi. Kita melempar beban kerja ke workflow.
         # Perhatikan: Router TIDAK tahu bagaimana AI memprosesnya, Router hanya tahu memanggil execute().
-        result = IssueSummaryWorkflow.execute(payload.text)
+        result = IssueSummaryWorkflow.execute(payload.text, request_id=request_id)
         
         # ─── LANGKAH 3: Kembalikan Response ke Client ───
         # Data diambil dari dictionary hasil workflow, lalu dimasukkan ke skema Pydantic.
         return IssueResponse(
             summary=result["summary"],
-            request_id=result["request_id"]
+            request_id=request_id
         )
         
     except ValueError as ve:

@@ -18,7 +18,6 @@
 #                  └─► 5. Kembalikan data hasil ke API Router
 # =====================================================================
 
-import uuid
 from typing import Dict, Any
 from prompts import load_prompt_template, format_prompt
 from services import get_ai_service
@@ -31,20 +30,17 @@ class IssueSummaryWorkflow:
     """
     
     @classmethod
-    def execute(cls, text: str) -> Dict[str, Any]:
+    def execute(cls, text: str, request_id: str) -> Dict[str, Any]:
         """
         Mengeksekusi alur pemrosesan isu dari awal hingga selesai.
         
         Args:
             text (str): Teks keluhan sistem (misal: "Database mati mendadak")
+            request_id (str): ID request unik hasil generate dari boundary API.
             
         Returns:
             dict: Berisi ringkasan serta log penyimpanan transaksi yang sukses.
         """
-        # =====================================================================
-        # 🔑 INGERT-POINT: GENERATE REQUEST ID (Lifecycle-Consistent Tracing Reference)
-        # =====================================================================
-        request_id = uuid.uuid4().hex
             
         # =====================================================================
         # 📥 LANGKAH 1: BACA TEMPLATE PROMPT (.txt)
