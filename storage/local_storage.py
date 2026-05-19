@@ -53,13 +53,14 @@ class LocalStorage:
                 json.dump([], f, indent=4)
 
     @classmethod
-    def save_record(cls, original_text: str, summary: str) -> Dict[str, Any]:
+    def save_record(cls, original_text: str, summary: str, request_id: str) -> Dict[str, Any]:
         """
         Menyimpan entri keluhan baru beserta ringkasan AI-nya ke history.json.
         
         Args:
             original_text (str): Keluhan asli dari pengguna.
             summary (str): Rangkuman satu kalimat dari AI.
+            request_id (str): ID request unik untuk tracing.
             
         Returns:
             dict: Objek data utuh yang baru saja disimpan (dilengkapi ID dan Waktu).
@@ -80,6 +81,7 @@ class LocalStorage:
         
         new_record = {
             "id": record_id,
+            "request_id": request_id,
             "timestamp": datetime.now().isoformat(), # Tanggal & waktu saat ini dalam format standar ISO
             "original_text": original_text,
             "summary": summary

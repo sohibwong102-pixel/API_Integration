@@ -12,7 +12,7 @@
 
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field, field_validator
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 # Import workflow bisnis dan storage lokal
 # Alur: Rute API akan memanggil Workflow, bukan langsung ke AI Service atau Storage.
@@ -69,13 +69,19 @@ class IssueResponse(BaseModel):
     Skema data output untuk response POST /api/issue-summary.
     Menjamin client hanya akan menerima JSON dengan format terstruktur:
     {
-       "summary": "Ringkasan hasil AI dalam satu kalimat..."
+       "summary": "Ringkasan hasil AI dalam satu kalimat...",
+       "request_id": "unique-uuid4-hex"
     }
     """
     summary: str = Field(
         ..., 
         description="Hasil ringkasan satu kalimat bahasa Inggris dari AI.",
         examples=["Deployment issue related to auth middleware conflict."]
+    )
+    request_id: str = Field(
+        ...,
+        description="Request ID unik untuk observabilitas/tracing.",
+        examples=["4a496f8c8cb64c20b4d455480741893f"]
     )
 
 
@@ -85,6 +91,7 @@ class HistoryRecordResponse(BaseModel):
     Mendefinisikan tipe data yang akan dikembalikan untuk setiap catatan log di database.
     """
     id: int = Field(..., description="ID unik dari riwayat keluhan (auto-increment)")
+    request_id: Optional[str] = Field(None, description="Request ID unik untuk observabilitas/tracing (opsional untuk kompatibilitas mundur)")
     timestamp: str = Field(..., description="Waktu kapan isu ini diproses (Format ISO)")
     original_text: str = Field(..., description="Teks keluhan asli dari pengguna")
     summary: str = Field(..., description="Hasil ringkasan dari AI")
@@ -118,7 +125,10 @@ def create_issue_summary(payload: IssueRequest):
         
         # ─── LANGKAH 3: Kembalikan Response ke Client ───
         # Data diambil dari dictionary hasil workflow, lalu dimasukkan ke skema Pydantic.
-        return IssueResponse(summary=result["summary"])
+        return IssueResponse(
+            summary=result["summary"],
+            request_id=result["request_id"]
+        )
         
     except ValueError as ve:
         # Menangkap error bisnis yang sengaja kita lempar dari workflow (misal validasi internal)

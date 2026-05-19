@@ -18,6 +18,7 @@
 #                  └─► 5. Kembalikan data hasil ke API Router
 # =====================================================================
 
+import uuid
 from typing import Dict, Any
 from prompts import load_prompt_template, format_prompt
 from services import get_ai_service
@@ -40,6 +41,10 @@ class IssueSummaryWorkflow:
         Returns:
             dict: Berisi ringkasan serta log penyimpanan transaksi yang sukses.
         """
+        # =====================================================================
+        # 🔑 INGERT-POINT: GENERATE REQUEST ID (Lifecycle-Consistent Tracing Reference)
+        # =====================================================================
+        request_id = uuid.uuid4().hex
             
         # =====================================================================
         # 📥 LANGKAH 1: BACA TEMPLATE PROMPT (.txt)
@@ -71,7 +76,7 @@ class IssueSummaryWorkflow:
         # =====================================================================
         # Penjelasan: Untuk keperluan audit dan menu history, kita menyimpan teks asli
         # dari user berserta teks rangkuman buatan AI ke database file JSON lokal.
-        saved_record = LocalStorage.save_record(original_text=text, summary=summary)
+        saved_record = LocalStorage.save_record(original_text=text, summary=summary, request_id=request_id)
         
         # =====================================================================
         # 📤 LANGKAH 5: BALIKKAN DATA DENGAN STRUKTUR RAPI
@@ -80,6 +85,7 @@ class IssueSummaryWorkflow:
         # api/routes.py agar bisa dikirim sebagai JSON ke pengguna.
         return {
             "summary": summary,
+            "request_id": request_id,
             "record": saved_record  # Menyertakan info record untuk kebutuhan visualisasi di frontend/client
         }
 
