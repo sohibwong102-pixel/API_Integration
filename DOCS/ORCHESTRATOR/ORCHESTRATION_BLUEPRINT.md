@@ -29,7 +29,7 @@ Proyek backend ini didukung oleh **6 peran spesialis** yang bekerja dalam harmon
 
 ### 3. ARCHITECTURE_GUARDIAN
 * **Tanggung Jawab**: Penjaga integritas struktur dan standar kualitas sistem.
-* **Fokus Utama**: Meninjau perubahan struktur folder, memastikan kepatuhan terhadap [DEVELOPMENT_PLAYBOOK.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/GLOBAL_DOCS/DEVELOPMENT_PLAYBOOK.md), memvalidasi keamanan dependensi, serta menjaga keterpeliharaan kode jangka panjang.
+* **Fokus Utama**: Meninjau perubahan struktur folder, memastikan kepatuhan terhadap [DEVELOPMENT_PLAYBOOK.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/DEVELOPMENT_PLAYBOOK.md), memvalidasi keamanan dependensi, serta menjaga keterpeliharaan kode jangka panjang.
 * **🚫 Batasan**: DILARANG merancang logika bisnis internal workflow atau memformat teks prompt.
 
 ### 4. BACKEND_SPECIALIST (The Thinker)

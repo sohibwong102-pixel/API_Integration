@@ -149,12 +149,13 @@ summary_endpoint/
 │   ├── __init__.py         # Inisialisasi package & export Storage
 │   ├── history.json        # Database log lokal berbasis file JSON
 │   └── local_storage.py    # Helper I/O baca-tulis file JSON
-├── GLOBAL_DOCS/            # 📚 Doktrin Global & Playbook Keselamatan API
-├── ORCHESTRATOR/           # ⚙️ Panduan Orkestrasi AI Pengembang
-├── RETENTION/              # 🎯 Panduan Retensi Integrasi & Ketahanan API
-├── INTERACTION/            # ⚡ Standar Desain Skema & Ketergunaan REST API
+├── DOCS/                   # 📂 Dokumen Tata Kelola & Riwayat Proyek
+│   ├── GLOBAL_DOCS/        # 📚 Doktrin Global & Playbook Keselamatan API
+│   ├── ORCHESTRATOR/       # ⚙️ Panduan Orkestrasi AI Pengembang
+│   ├── RETENTION/          # 🎯 Panduan Retensi Integrasi & Ketahanan API
+│   ├── INTERACTION/        # ⚡ Standar Desain Skema & Ketergunaan REST API
+│   └── HISTORY_IMPLEMENT/  # 📝 Catatan Perubahan & Fitur Terimplementasi
 ├── analytics_projects/     # 📉 Laporan Audit Arsitektur & Hutang Teknis
-├── HISTORY_IMPLEMENT/      # 📝 Catatan Perubahan & Fitur Terimplementasi
 ├── main.py                 # Entry point aplikasi utama (Inisialisasi FastAPI)
 └── README.md               # Dokumentasi panduan lengkap (File Ini)
 ```
@@ -220,19 +221,19 @@ summary_endpoint/
 Jika Anda adalah **Agen AI Coding (seperti Antigravity, Cline, Roo Code, dll.)** yang dipanggil untuk berkontribusi atau memodifikasi repositori ini, Anda **WAJIB** membaca dan mematuhi aturan tata kelola di bawah ini sebelum memodifikasi berkas apa pun:
 
 ### 🛡️ Matriks Keselamatan File (File Safety Matrix)
-* Buka dan pelajari [DEVELOPMENT_PLAYBOOK.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/GLOBAL_DOCS/DEVELOPMENT_PLAYBOOK.md) untuk melihat pembagian keamanan berkas (**Red, Yellow, Green Tiers**).
+* Buka dan pelajari [DEVELOPMENT_PLAYBOOK.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/DEVELOPMENT_PLAYBOOK.md) untuk melihat pembagian keamanan berkas (**Red, Yellow, Green Tiers**).
 * **Dilarang keras** memodifikasi file berlabel **RED TIER** tanpa persetujuan manual eksplisit dari pengguna.
 
 ### ⚙️ Hubungkan Peran AI Anda (AI Agent Alignment)
-* Buka [ORCHESTRATION_BLUEPRINT.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/ORCHESTRATOR/ORCHESTRATION_BLUEPRINT.md) untuk menyelaraskan peran Anda.
+* Buka [ORCHESTRATION_BLUEPRINT.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/ORCHESTRATOR/ORCHESTRATION_BLUEPRINT.md) untuk menyelaraskan peran Anda.
 * Pastikan apakah tugas Anda termasuk dalam domain **Thinker/Specialist** (desain arsitektur) atau **Executor/Implementation** (penulisan kode program).
 
 ### 📐 Batasan Layer Direktori (Encapsulation Boundaries)
 * Jangan memintas alur workflow! Dilarang memanggil database JSON atau AI Service secara langsung di dalam [api/routes.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/api/routes.py).
-* Semua logika orkestrasi wajib diselesaikan di layer konduktor [workflows/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/workflows/) sesuai blueprint di [SYSTEM_ARCHITECTURE.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/GLOBAL_DOCS/SYSTEM_ARCHITECTURE.md).
+* Semua logika orkestrasi wajib diselesaikan di layer konduktor [workflows/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/workflows/) sesuai blueprint di [SYSTEM_ARCHITECTURE.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/SYSTEM_ARCHITECTURE.md).
 
 ### ⚡ Desain DX & Penanganan Error
-* Semua rute API dan response error wajib memenuhi kriteria ketergunaan pengembang (DX) di [API_USABILITY_RULES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/ORCHESTRATOR/API_USABILITY_RULES.md) dan [API_USABILITY_PRINCIPLES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/INTERACTION/API_USABILITY_PRINCIPLES.md).
+* Semua rute API dan response error wajib memenuhi kriteria ketergunaan pengembang (DX) di [API_USABILITY_RULES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/ORCHESTRATOR/API_USABILITY_RULES.md) dan [API_USABILITY_PRINCIPLES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/INTERACTION/API_USABILITY_PRINCIPLES.md).
 * Gunakan Pydantic untuk validasi tipe data dan bungkus exception dengan `HTTPException` terformat.
 
 ### 📈 Peta Jalan & Hambatan Evolusi (Evolutionary Analysis)
@@ -244,31 +245,31 @@ Jika Anda adalah **Agen AI Coding (seperti Antigravity, Cline, Roo Code, dll.)**
 
 Proyek ini dilengkapi dengan modul tata kelola doktrin dan pedoman pengembangan terpadu untuk memastikan kepatuhan standar kualitas tinggi bagi pengembang manusia maupun Agen AI Coding:
 
-### 📚 Doktrin Global & Playbook API (`GLOBAL_DOCS/`)
+### 📚 Doktrin Global & Playbook API (`DOCS/GLOBAL_DOCS/`)
 Dokumen tata kelola arsitektur, standar keselamatan, dan peta fitur sistem:
-* 📄 **[SYSTEM_ARCHITECTURE.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/GLOBAL_DOCS/SYSTEM_ARCHITECTURE.md)**: Detail pembagian arsitektur modular, batasan layer direktori, dan diagram request-response.
-* 📄 **[DEVELOPMENT_PLAYBOOK.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/GLOBAL_DOCS/DEVELOPMENT_PLAYBOOK.md)**: Aturan Matriks Keselamatan File (**Red, Yellow, Green**) dan larangan modifikasi kode.
-* 📄 **[SYSTEM_FEATURE_MAP.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/GLOBAL_DOCS/SYSTEM_FEATURE_MAP.md)**: Indeks rute aktif dan peta jalan evolusi/skalabilitas sistem.
-* 📄 **[AI_PROVIDER_ROUTING_GUIDE.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/GLOBAL_DOCS/AI_PROVIDER_ROUTING_GUIDE.md)**: Panduan perutean penyedia AI (Lokal, Cloud, Pihak Ketiga) dan strategi Auto-Failover LLM bagi pemula.
+* 📄 **[SYSTEM_ARCHITECTURE.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/SYSTEM_ARCHITECTURE.md)**: Detail pembagian arsitektur modular, batasan layer direktori, dan diagram request-response.
+* 📄 **[DEVELOPMENT_PLAYBOOK.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/DEVELOPMENT_PLAYBOOK.md)**: Aturan Matriks Keselamatan File (**Red, Yellow, Green**) dan larangan modifikasi kode.
+* 📄 **[SYSTEM_FEATURE_MAP.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/SYSTEM_FEATURE_MAP.md)**: Indeks rute aktif dan peta jalan evolusi/skalabilitas sistem.
+* 📄 **[AI_PROVIDER_ROUTING_GUIDE.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/AI_PROVIDER_ROUTING_GUIDE.md)**: Panduan perutean penyedia AI (Lokal, Cloud, Pihak Ketiga) dan strategi Auto-Failover LLM bagi pemula.
 
 ---
 
-### ⚙️ Pedoman Orkestrasi AI (`ORCHESTRATOR/`)
+### ⚙️ Pedoman Orkestrasi AI (`DOCS/ORCHESTRATOR/`)
 Dokumen khusus yang mengatur alur orkestrasi pengerjaan AI:
-* 📄 **[ORCHESTRATION_BLUEPRINT.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/ORCHESTRATOR/ORCHESTRATION_BLUEPRINT.md)**: Peran 6 AI Agent pembangun dan perutean tugas Backend (Thinker vs. Executor).
-* 📄 **[API_USABILITY_RULES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/ORCHESTRATOR/API_USABILITY_RULES.md)**: Pedoman Developer Experience (DX) untuk standardisasi format JSON dan dokumentasi Swagger UI.
+* 📄 **[ORCHESTRATION_BLUEPRINT.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/ORCHESTRATOR/ORCHESTRATION_BLUEPRINT.md)**: Peran 6 AI Agent pembangun dan perutean tugas Backend (Thinker vs. Executor).
+* 📄 **[API_USABILITY_RULES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/ORCHESTRATOR/API_USABILITY_RULES.md)**: Pedoman Developer Experience (DX) untuk standardisasi format JSON dan dokumentasi Swagger UI.
 
 ---
 
-### 🎯 Pedoman Retensi Integrasi (`RETENTION/`)
+### 🎯 Pedoman Retensi Integrasi (`DOCS/RETENTION/`)
 Aturan khusus untuk mengoptimalkan pengalaman pengembang dan reduksi friksi:
-* 📄 **[API_RETENTION_RULES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/RETENTION/API_RETENTION_RULES.md)**: Sinyal kelelahan integrasi developer (422 error, latency tinggi) dan otomatisasi *failover* LLM.
+* 📄 **[API_RETENTION_RULES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/RETENTION/API_RETENTION_RULES.md)**: Sinyal kelelahan integrasi developer (422 error, latency tinggi) dan otomatisasi *failover* LLM.
 
 ---
 
-### ⚡ Pedoman Ketergunaan REST (`INTERACTION/`)
+### ⚡ Pedoman Ketergunaan REST (`DOCS/INTERACTION/`)
 Prinsip desain antarmuka REST API dan optimalisasi payload:
-* 📄 **[API_USABILITY_PRINCIPLES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/INTERACTION/API_USABILITY_PRINCIPLES.md)**: Aturan kebab-case rute URL, semantik penamaan kunci JSON, serta anggaran latensi (latency budgets).
+* 📄 **[API_USABILITY_PRINCIPLES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/INTERACTION/API_USABILITY_PRINCIPLES.md)**: Aturan kebab-case rute URL, semantik penamaan kunci JSON, serta anggaran latensi (latency budgets).
 
 ---
 
@@ -285,6 +286,6 @@ Untuk memastikan proyek ini dapat dikembangkan dalam skala besar tanpa hambatan 
 
 Pelacakan log perubahan besar dan migrasi arsitektur pada repositori:
 
-* 📂 **[HISTORY_IMPLEMENT/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/HISTORY_IMPLEMENT/)**
-  * 📄 **[2026_05_18_modular_ai_router.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/HISTORY_IMPLEMENT/2026_05_18_modular_ai_router.md)**: Log dan analisis refaktorisasi penuh `services/` menjadi modul `ai/` multi-provider berbasis konfigurasi yang mendukung *auto-failover* mandiri.
-  * 📄 **[2026_05_18_runtime_config_instance.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/HISTORY_IMPLEMENT/2026_05_18_runtime_config_instance.md)**: Log implementasi konfigurasi berbasis instansi dinamis (*runtime-based instance config*) menggantikan pembacaan global `os.getenv` statis dengan validasi *strict fail-fast* pada inisialisasi kelas `Settings`.
+* 📂 **[HISTORY_IMPLEMENT/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/HISTORY_IMPLEMENT/)**
+  * 📄 **[2026_05_18_backend_architecture_refactoring.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/HISTORY_IMPLEMENT/2026_05_18_backend_architecture_refactoring.md)**: Konsolidasi arsitektur konfigurasi dinamis (*runtime-based instance config*) dan perutean AI multi-provider dengan fitur *auto-failover*.
+  * 📄 **[2026_05_19_unified_base_dir_entrypoint.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/HISTORY_IMPLEMENT/2026_05_19_unified_base_dir_entrypoint.md)**: Standardisasi pola impor variabel `BASE_DIR` agar terpusat melalui satu modul pintu masuk (`core`) untuk menghindari circular dependency.
