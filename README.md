@@ -331,7 +331,4 @@ Pelacakan log perubahan besar dan migrasi arsitektur pada repositori:
   - **2026_05_18**:
     - **Refaktorisasi Config Dinamis & AI Router** (`2026_05_18_backend_architecture_refactoring.md`) - Memisahkan konfigurasi runtime dan mendukung failover penyedia AI otomatis.
   - **2026_05_19**:
-    - **Pintu Impor Tunggal `BASE_DIR`** (`2026_05_19_unified_base_dir_entrypoint.md`) - Mengarahkan impor direktori utama lewat modul `core` untuk menghindari circular dependency.
-    - **Pencegahan Input Kosong & Hardening API** (`2026_05_19_api_request_validation_hardening.md`) - Menambahkan validasi Pydantic ketat untuk memotong spasi kosong, menghalangi input kosong, dan membatasi panjang payload.
-    - **Tracing Observability dengan Unique Request ID** (`2026_05_19_observability_request_id.md`) - Menambahkan request_id berbasis UUID4 pada workflow untuk kebutuhan observability dan penelusuran transaksi.
-    - **Standardisasi Siklus Hidup Request ID** (`2026_05_19_standardized_request_id_lifecycle.md`) - Menghasilkan `request_id` di batas terluar (API layer) dan meneruskannya secara eksplisit ke workflow dan storage.
+    - **Penyelarasan Arsitektur, Validasi API & Tracing Request** (`2026_05_19_api_hardening_and_observability.md`) - Konsolidasi standardisasi impor `BASE_DIR`, pengerasan skema Pydantic masukan, dan pelacakan request_id terpadu.
