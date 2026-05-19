@@ -11,7 +11,7 @@
 # =====================================================================
 
 from fastapi import APIRouter, HTTPException, status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Dict, Any
 
 # Import workflow bisnis dan storage lokal
@@ -44,9 +44,24 @@ class IssueRequest(BaseModel):
     """
     text: str = Field(
         ..., # Simbol '...' (ellipsis) menandakan field ini WAJIB diisi, tidak boleh absen
+        min_length=1,
+        max_length=4000,
         description="Deskripsi teks keluhan/laporan isu sistem yang ingin dirangkum.",
         examples=["backend deploy gagal setelah update auth middleware"]
     )
+
+    @field_validator("text")
+    @classmethod
+    def validate_text(cls, value: str) -> str:
+        # Lakukan whitespace stripping sebelum validation final
+        cleaned = value.strip()
+
+        if not cleaned:
+            raise ValueError(
+                "Text input cannot be empty."
+            )
+
+        return cleaned
 
 
 class IssueResponse(BaseModel):
@@ -91,22 +106,12 @@ def create_issue_summary(payload: IssueRequest):
     
     [ALUR LOGIKA POST REQUEST]:
     1. User mengirim JSON -> Pydantic `payload` (IssueRequest) memvalidasi strukturnya.
-    2. Program memeriksa apakah teks kosong/hanya spasi.
-    3. Program memanggil `IssueSummaryWorkflow.execute` (Otak Alur Bisnis).
-    4. Workflow memproses dan mengembalikan kamus (dictionary) hasil.
-    5. Program mengembalikan hasil tersebut dibungkus skema `IssueResponse`.
+    2. Program memanggil `IssueSummaryWorkflow.execute` (Otak Alur Bisnis).
+    3. Workflow memproses dan mengembalikan kamus (dictionary) hasil.
+    4. Program mengembalikan hasil tersebut dibungkus skema `IssueResponse`.
     """
-    
-    # ─── LANGKAH 1: Validasi manual tambahan ───
-    # Jika user mengirim string kosong, spasi banyak saja ("   "), kita tolak.
-    if not payload.text.strip():
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Teks issue tidak boleh kosong atau hanya berupa spasi."
-        )
-        
     try:
-        # ─── LANGKAH 2: Eksekusi Alur Kerja (Workflow) ───
+        # ─── LANGKAH 1: Eksekusi Alur Kerja (Workflow) ───
         # Di sinilah integrasi terjadi. Kita melempar beban kerja ke workflow.
         # Perhatikan: Router TIDAK tahu bagaimana AI memprosesnya, Router hanya tahu memanggil execute().
         result = IssueSummaryWorkflow.execute(payload.text)

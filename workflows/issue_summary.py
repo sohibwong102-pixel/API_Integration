@@ -40,9 +40,6 @@ class IssueSummaryWorkflow:
         Returns:
             dict: Berisi ringkasan serta log penyimpanan transaksi yang sukses.
         """
-        # 🛡️ VALIDASI AWAL: Mencegah parameter kosong lolos ke dalam alur pemrosesan.
-        if not text or not text.strip():
-            raise ValueError("Input text tidak boleh kosong.")
             
         # =====================================================================
         # 📥 LANGKAH 1: BACA TEMPLATE PROMPT (.txt)
