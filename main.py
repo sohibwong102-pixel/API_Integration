@@ -40,8 +40,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api import router as api_router
-from core import settings
-from core.error_handlers import register_error_handlers
+from core import settings, register_error_handlers
 
 # 🛡️ VALIDASI STARTUP KRITIS (Fail Fast)
 # Memastikan semua variabel lingkungan yang wajib untuk provider aktif telah dikonfigurasi dengan benar.
