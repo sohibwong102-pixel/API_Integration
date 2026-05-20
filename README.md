@@ -1,334 +1,284 @@
-# 🛠️ Operational Workflow API (V1)
+# 😎🔥 API Integration — Operational Workflow Backend
 
-Selamat datang di proyek **Operational Workflow API (V1)**. Proyek ini dirancang sebagai kerangka kerja backend minimalis, modular, dan ramah pemula berbasis **Python** dan **FastAPI**.
+Backend workflow orchestration framework berbasis FastAPI + modular AI routing.
 
-Arsitektur ini didesain agar mudah dikembangkan di masa mendatang untuk mendukung berbagai endpoint berbasis alur kerja (workflow) tanpa mengalami overengineering atau menggunakan boilerplate yang rumit.
+Dirancang untuk:
+- rapid API experimentation
+- AI provider orchestration
+- workflow-based backend development
+- scalable modular architecture
+- AI-agent friendly collaboration
 
 ---
 
-## 🚀 1. Quick Start (Mulai Cepat dalam 3 Langkah)
+# ✨ Highlights
 
-Ikuti langkah mudah berikut di terminal Anda untuk menjalankan aplikasi secara lokal dalam hitungan menit:
+- ⚡ FastAPI modular backend
+- 🤖 Multi-provider AI routing
+- 🔄 Auto-failover AI provider
+- 🧠 Workflow conductor architecture
+- 📦 Prompt-based orchestration
+- 🛡️ AI coding governance docs
+- 🧪 Beginner-friendly testing flow
+- 📈 Evolution-ready structure
 
-### Langkah A: Inisialisasi Virtual Environment Python
+---
 
-Membuat dan mengaktifkan virtual environment terisolasi untuk menghindari konflik paket global:
+# 🧠 System Philosophy
+
+Project ini dibangun dengan mindset:
+
+> "workflow first, provider agnostic, orchestration ready" 😎🔥
+
+Artinya:
+- business logic tidak terkunci ke 1 AI provider
+- workflow dipisah dari transport layer
+- prompt dipisah dari code
+- storage dipisah dari orchestration
+- scaling dilakukan secara bertahap tanpa overengineering
+
+---
+
+# 🚀 Quick Start
+
+## 1. Clone Repository
 
 ```bash
-# Membuat virtual environment bernama .venv
-python3 -m venv .venv
-
-# Mengaktifkan virtual environment (Linux/macOS)
-source .venv/bin/activate
-
-# Untuk Windows (CMD/PowerShell) gunakan:
-# .venv\Scripts\activate
+git clone https://github.com/sohibwong102-pixel/API_Integration.git
+cd API_Integration
 ```
 
-### Langkah B: Instalasi Dependensi Terkait
+---
 
-Pasang dependensi minimal yang dibutuhkan untuk menjalankan server API FastAPI:
+## 2. Setup Virtual Environment
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Windows:
+
+```powershell
+.venv\Scripts\activate
+```
+
+---
+
+## 3. Install Dependencies
 
 ```bash
 pip install fastapi uvicorn requests
 ```
 
-_(Catatan: Anda juga bisa menyalin berkas `.env.example` menjadi `.env` jika ingin mengonfigurasi AI provider alternatif)._
+---
 
-### Langkah C: Jalankan Server API
-
-Mulai server FastAPI lokal menggunakan runner terintegrasi:
+## 4. Run Server
 
 ```bash
 python main.py
 ```
 
-_Server akan berjalan secara otomatis di alamat: **`http://127.0.0.1:8000`** dengan fitur **Auto-Reload** aktif (server akan merestart otomatis setiap kali Anda menyimpan perubahan kode)._
+Server:
 
----
-
-## 🧪 2. Contoh Pengujian API (API Testing Guide)
-
-FastAPI secara otomatis menyediakan dokumentasi interaktif yang luar biasa. Anda dapat menguji API menggunakan browser melalui **Swagger UI** di alamat: **`http://127.0.0.1:8000/docs`**.
-
-Jika Anda lebih menyukai terminal, Anda bisa membuka jendela terminal baru dan menjalankan perintah `curl` berikut:
-
-### Skenario A: Menguji Ringkasan Isu (`POST /api/issue-summary`)
-
-Kirimkan keluhan operasional sistem untuk diringkas oleh mesin AI:
-
-```bash
-curl -s -X POST -H "Content-Type: application/json" \
-  -d '{"text": "backend deploy gagal setelah update auth middleware"}' \
-  http://127.0.0.1:8000/api/issue-summary | json_pp
+```txt
+http://127.0.0.1:8000
 ```
 
-**Ekspektasi Output JSON:**
+Swagger Docs:
 
-```json
-{
-  "summary": "Deployment issue related to auth middleware conflict."
-}
-```
-
-### Skenario B: Menguji Dynamic Mocking (Keluhan Database)
-
-Uji dengan keluhan database untuk melihat respons asisten yang dinamis:
-
-```bash
-curl -s -X POST -H "Content-Type: application/json" \
-  -d '{"text": "aplikasi mati karena database postgreSQL timeout dan gagal konek"}' \
-  http://127.0.0.1:8000/api/issue-summary | json_pp
-```
-
-**Ekspektasi Output JSON:**
-
-```json
-{
-  "summary": "Database connection timeout preventing successful service startup."
-}
-```
-
-### Skenario C: Meninjau Riwayat Database Lokal (`GET /api/history`)
-
-Semua request pengujian otomatis dicatat ke dalam database JSON lokal. Tinjau semua transaksi dengan:
-
-```bash
-curl -s http://127.0.0.1:8000/api/history | json_pp
-```
-
-**Ekspektasi Output JSON:**
-
-```json
-[
-  {
-    "id": 1,
-    "timestamp": "2026-05-18T18:56:24.367143",
-    "original_text": "backend deploy gagal setelah update auth middleware",
-    "summary": "Deployment issue related to auth middleware conflict."
-  }
-]
+```txt
+http://127.0.0.1:8000/docs
 ```
 
 ---
 
-## 📐 3. Diagram Alur Kerja & Arsitektur (Request Journey)
+# 🧪 API Testing
 
-Sekarang aplikasi Anda sudah berjalan dan sukses diuji! Mari kita pahami bagaimana data mengalir di dalam arsitektur aslinya:
+## POST `/api/issue-summary`
 
-Setiap permintaan (request) masuk dari API Client akan melewati rute modular berikut:
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"text":"backend deploy gagal setelah update middleware"}' \
+  http://127.0.0.1:8000/api/issue-summary
+```
+
+Example response:
+
+```json
+{
+  "summary": "Deployment issue related to middleware conflict."
+}
+```
+
+---
+
+## GET `/api/history`
+
+```bash
+curl http://127.0.0.1:8000/api/history
+```
+
+---
+
+# 🏗️ Architecture Overview
 
 ```mermaid
 graph LR
-    A[API Endpoint] -->|1. Pemicu Rute| B(Workflow Conductor)
-    B -->|2. Muat & Format| C[Prompt Template]
-    B -->|3. Terjemahkan Prompt| D[Modular AI Engine]
-    B -->|4. Log Transaksi| E[Local Storage JSON]
-    B -->|5. Kembalikan Response| A
+    A[API Layer] --> B[Workflow Conductor]
+    B --> C[Prompt Loader]
+    B --> D[AI Router]
+    B --> E[Storage Layer]
+    D --> F[OpenAI]
+    D --> G[Gemini]
+    D --> H[Ollama]
+    D --> I[OpenRouter]
 ```
 
 ---
 
-## 📁 4. Struktur Folder Proyek & Kode Sumber (Codebase Index)
+# 📁 Project Structure
 
-Berikut adalah peta struktur direktori bersih dan terisolasi dari proyek ini untuk memandu Anda berselancar di dalam kode program:
-
-```text
-summary_endpoint/
-├── .venv/                  # Virtual Environment Python
-├── core/                   # ⚙️ Centralized Settings & Core System Setup
-│   ├── __init__.py         # Expose settings & basis direktori absolut
-│   └── config.py           # Kelas Settings (Runtime-Based Instance Config)
-├── api/                    # Layer API & Request/Response Validator
-│   ├── __init__.py         # Inisialisasi package & export Router
-│   └── routes.py           # Endpoint FastAPI & Skema Pydantic
-├── workflows/              # Layer Bisnis / Konduktor Alur Kerja
-│   ├── __init__.py         # Inisialisasi package & export Workflow
-│   └── issue_summary.py    # Koordinasi pemanggilan Prompt, AI, & Storage
-├── services/               # Integrasi Pihak Ketiga (Modular AI Engine)
-│   ├── __init__.py         # Inisialisasi package & export Gateway
-│   ├── ai_service.py       # Gateway kompatibilitas ke arsitektur baru
-│   └── ai/                 # 🤖 Paket Modular Multi-Provider AI (Refactored)
-│       ├── __init__.py      # Expose facade, router, & registry
-│       ├── base.py          # Interface/contract BaseAIService & BaseProvider
-│       ├── facade.py        # Unified entry point (AIFacade) untuk workflow
-│       ├── models.py        # Normalized response format (AIResponse)
-│       ├── registry.py      # Registri pemetaan provider adapter
-│       ├── router.py        # Logika perutean & orkestrasi fallback
-│       └── providers/       # Adapter Penyedia Layanan AI
-│           ├── __init__.py  # Expose adapter
-│           ├── mock_provider.py
-│           ├── ollama_provider.py
-│           ├── openai_provider.py
-│           ├── gemini_provider.py
-│           └── openrouter_provider.py
-├── prompts/                # Koleksi Prompt Engineering
-│   ├── __init__.py         # Inisialisasi package & export Loader
-│   ├── loader.py           # Helper pemuat & pemformat file prompt .txt
-│   └── issue_summary.txt   # File teks template instruksi AI
-├── storage/                # Layer Penyimpanan Data (File-Based JSON)
-│   ├── __init__.py         # Inisialisasi package & export Storage
-│   ├── history.json        # Database log lokal berbasis file JSON
-│   └── local_storage.py    # Helper I/O baca-tulis file JSON
-├── DOCS/                   # 📂 Dokumen Tata Kelola & Riwayat Proyek
-│   ├── GLOBAL_DOCS/        # 📚 Doktrin Global & Playbook Keselamatan API
-│   ├── ORCHESTRATOR/       # ⚙️ Panduan Orkestrasi AI Pengembang
-│   ├── RETENTION/          # 🎯 Panduan Retensi Integrasi & Ketahanan API
-│   ├── INTERACTION/        # ⚡ Standar Desain Skema & Ketergunaan REST API
-│   └── HISTORY_IMPLEMENT/  # 📝 Catatan Perubahan & Fitur Terimplementasi
-├── analytics_projects/     # 📉 Laporan Audit Arsitektur & Hutang Teknis
-├── main.py                 # Entry point aplikasi utama (Inisialisasi FastAPI)
-└── README.md               # Dokumentasi panduan lengkap (File Ini)
+```txt
+API_Integration/
+├── api/                # FastAPI routes & schemas
+├── core/               # settings & centralized configs
+├── workflows/          # workflow orchestration layer
+├── prompts/            # prompt templates
+├── services/
+│   └── ai/             # modular AI provider system
+├── storage/            # local persistence layer
+├── DOCS/               # governance & architecture docs
+├── analytics_projects/ # technical analysis & scaling docs
+├── main.py
+└── README.md
 ```
 
 ---
 
-## 📄 5. Penjelasan Setiap Berkas (File Explanation)
+# 🤖 AI Provider System
 
-### ⚙️ [core/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/core/) & [core/config.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/core/config.py)
+Project ini menggunakan modular provider architecture.
 
-- **Peran:** Pusat Pengaturan & Konfigurasi Sistem Terpusat.
-- **Fungsi:** Mengadopsi arsitektur **Runtime-Based Instance Configuration**:
-  - **`config.py`**: Kelas `Settings` dinamis yang memuat variabel lingkungan dari berkas `.env` saat objek dibuat dan mengonversi properti (Host, Port, AI Provider, API Keys, DB Path) menjadi instance variables dengan dukungan _strict fail-fast validation_ pada startup server.
-  - **`__init__.py`**: Mengekspos instansi tunggal (_singleton_) `settings` secara global untuk menjamin konsistensi pembacaan data di seluruh layer aplikasi.
+Supported providers:
 
-### 1. [main.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/main.py)
+- OpenAI
+- Gemini
+- Ollama
+- OpenRouter
+- Mock Provider
 
-- **Peran:** Titik masuk utama server.
-- **Fungsi:** Menginisialisasi aplikasi FastAPI, mengonfigurasi middleware CORS, memasang APIRouter modular dari folder `/api` dengan prefix `/api`, serta menyediakan rute root `/` untuk pengecekan status server.
+Routing system mendukung:
 
-### 2. [api/routes.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/api/routes.py)
-
-- **Peran:** Gerbang masuk HTTP Request & Validasi Pydantic.
-- **Fungsi:** Menampung skema data Pydantic (`IssueRequest`, `IssueResponse`) untuk validasi tipe data payload JSON secara otomatis. Mengarahkan request `POST /api/issue-summary` langsung ke workflow penanganannya.
-
-### 3. [workflows/issue_summary.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/workflows/issue_summary.py)
-
-- **Peran:** Otak bisnis aplikasi (Workflow Coordinator).
-- **Fungsi:** Mengatur orkestrasi pemrosesan laporan masalah tanpa mengetahui detail teknis dari masing-masing komponen. Tugasnya:
-  1. Memuat file template prompt dari `/prompts`.
-  2. Menyisipkan input teks dari API ke template prompt.
-  3. Memanggil AI Service agnostik.
-  4. Menyimpan catatan transaksi di local storage.
-  5. Mengembalikan hasil ke API.
-
-### 4. [services/ai/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/services/ai/) & [services/ai_service.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/services/ai_service.py)
-
-- **Peran:** Paket Mesin Multi-Provider AI Modular & Gateway Kompatibilitas.
-- **Fungsi:** Paket modular ini mengadopsi **Facade, Router, dan Registry Patterns** untuk perutean AI dinamis berbasis konfigurasi:
-  - **`services/ai/base.py`**: Kontrak antarmuka (`BaseAIService`, `BaseProvider`) untuk isolasi dependensi longgar.
-  - **`services/ai/models.py`**: Standardisasi format respon terpadu (`AIResponse`) agar seragam.
-  - **`services/ai/registry.py`**: Registri pemetaan string nama provider ke class adapter penyedia AI.
-  - **`services/ai/router.py`**: Logika `AIRouter` yang membaca prioritas `PRIMARY_PROVIDER` / `FALLBACK_PROVIDER` dari env dan melakukan _auto-failover_ otomatis jika provider utama mengalami kegagalan.
-  - **`services/ai/facade.py`**: Menyediakan entry point tunggal `AIFacade` bagi layer bisnis agar tetap steril.
-  - **`services/ai/providers/`**: Adapter modular terisolasi untuk penyedia AI (Ollama Lokal, Google Gemini, OpenAI, OpenRouter, dan Mock).
-  - **`services/ai_service.py`**: Berkas gateway kompatibilitas ke belakang (_backward compatibility_) yang mengarahkan pemanggilan legacy `get_ai_service()` langsung ke `AIFacade()` yang baru sehingga nol perubahan terjadi pada layer bisnis.
-
-### 5. [prompts/loader.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/prompts/loader.py)
-
-- **Peran:** Pemisah instruksi AI dengan instruksi pemrograman.
-- **Fungsi:** Berisi helper untuk membaca berkas `.txt` secara aman dari disk dan menyediakan fungsi format Python dinamis demi mencegah penulisan prompt secara hardcode di baris kode aplikasi.
-
-### 6. [storage/local_storage.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/storage/local_storage.py)
-
-- **Peran:** Persistence Layer minimalis.
-- **Fungsi:** Mengelola baca-tulis riwayat request secara langsung ke file `storage/history.json`.
+- provider switching
+- fallback chain
+- centralized response normalization
+- orchestration abstraction
 
 ---
 
-## 📈 6. Keunggulan Desain Modular Ini
+# 🧩 Workflow Design
 
-1. **Sangat Mudah Dikembangkan:** Jika ingin menambahkan alur kerja baru (misalnya `/issue-categorize` atau `/generate-playbook`), Anda hanya perlu membuat workflow baru di `/workflows`, membuat prompt di `/prompts`, dan mendaftarkan rutenya di `/api/routes.py`.
-2. **AI Provider Routing & Fallback Cerdas**: Didukung penuh oleh arsitektur `services/ai/` yang modular. Berganti provider utama (`PRIMARY_PROVIDER`) atau menentukan cadangan (`FALLBACK_PROVIDER`) kini 100% berbasis konfigurasi _environment variables_, lengkap dengan _auto-failover_ instan jika server utama bermasalah.
-3. **Penyimpanan Terisolasi:** Modul penyimpanan terisolasi di `/storage` sehingga jika Anda ingin naik kelas menggunakan SQLite/PostgreSQL, Anda tinggal mendefinisikan kodenya di `storage/` tanpa menyentuh core workflow atau api router.
+Setiap workflow bertugas sebagai:
 
----
+- conductor
+- orchestrator
+- integration coordinator
 
-## 🤖 7. Protokol Kontribusi Agen AI (AI Coding Agent Protocol)
+Workflow TIDAK boleh:
 
-Jika Anda adalah **Agen AI Coding (seperti Antigravity, Cline, Roo Code, dll.)** yang dipanggil untuk berkontribusi atau memodifikasi repositori ini, Anda **WAJIB** membaca dan mematuhi aturan tata kelola di bawah ini sebelum memodifikasi berkas apa pun:
+- langsung handle database logic berat
+- langsung handle provider internals
+- hardcode prompt
+- bypass routing layer
 
-### 🛡️ Matriks Keselamatan File (File Safety Matrix)
-
-- Buka dan pelajari [DEVELOPMENT_PLAYBOOK.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/DEVELOPMENT_PLAYBOOK.md) untuk melihat pembagian keamanan berkas (**Red, Yellow, Green Tiers**).
-- **Dilarang keras** memodifikasi file berlabel **RED TIER** tanpa persetujuan manual eksplisit dari pengguna.
-
-### ⚙️ Hubungkan Peran AI Anda (AI Agent Alignment)
-
-- Buka [ORCHESTRATION_BLUEPRINT.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/ORCHESTRATOR/ORCHESTRATION_BLUEPRINT.md) untuk menyelaraskan peran Anda.
-- Pastikan apakah tugas Anda termasuk dalam domain **Thinker/Specialist** (desain arsitektur) atau **Executor/Implementation** (penulisan kode program).
-
-### 📐 Batasan Layer Direktori (Encapsulation Boundaries)
-
-- Jangan memintas alur workflow! Dilarang memanggil database JSON atau AI Service secara langsung di dalam [api/routes.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/api/routes.py).
-- Semua logika orkestrasi wajib diselesaikan di layer konduktor [workflows/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/workflows/) sesuai blueprint di [SYSTEM_ARCHITECTURE.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/SYSTEM_ARCHITECTURE.md).
-
-### ⚡ Desain DX & Penanganan Error
-
-- Semua rute API dan response error wajib memenuhi kriteria ketergunaan pengembang (DX) di [API_USABILITY_RULES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/ORCHESTRATOR/API_USABILITY_RULES.md) dan [API_USABILITY_PRINCIPLES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/INTERACTION/API_USABILITY_PRINCIPLES.md).
-- Gunakan Pydantic untuk validasi tipe data dan bungkus exception dengan `HTTPException` terformat.
-
-### 📈 Peta Jalan & Hambatan Evolusi (Evolutionary Analysis)
-
-- Sebelum melakukan refactoring database atau koneksi HTTP, Anda **wajib** mempelajari analisis teknis di [evolutionary_bottlenecks.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/analytics_projects/evolutionary_bottlenecks.md) untuk memahami tantangan file-locking, thread starvation, dan auto-failover LLM.
+Ini menjaga architecture tetap scalable 😎🔥
 
 ---
 
-## 📚 8. Sistem Doktrin & Kebijakan Repositori (Repository Doctrines)
+# 🛡️ AI Coding Governance
 
-Proyek ini dilengkapi dengan modul tata kelola doktrin dan pedoman pengembangan terpadu untuk memastikan kepatuhan standar kualitas tinggi bagi pengembang manusia maupun Agen AI Coding:
+Repo ini dibuat agar compatible dengan AI Coding Agent seperti:
 
-### 📚 Doktrin Global & Playbook API (`DOCS/GLOBAL_DOCS/`)
+- Cline
+- Roo Code
+- Antigravity
+- Cursor
+- OpenAI Codex
 
-Dokumen tata kelola arsitektur, standar keselamatan, dan peta fitur sistem:
+Semua governance docs tersedia di:
 
-- 📄 **[SYSTEM_ARCHITECTURE.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/SYSTEM_ARCHITECTURE.md)**: Detail pembagian arsitektur modular, batasan layer direktori, dan diagram request-response.
-- 📄 **[DEVELOPMENT_PLAYBOOK.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/DEVELOPMENT_PLAYBOOK.md)**: Aturan Matriks Keselamatan File (**Red, Yellow, Green**) dan larangan modifikasi kode.
-- 📄 **[SYSTEM_FEATURE_MAP.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/SYSTEM_FEATURE_MAP.md)**: Indeks rute aktif dan peta jalan evolusi/skalabilitas sistem.
-- 📄 **[AI_PROVIDER_ROUTING_GUIDE.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/GLOBAL_DOCS/AI_PROVIDER_ROUTING_GUIDE.md)**: Panduan perutean penyedia AI (Lokal, Cloud, Pihak Ketiga) dan strategi Auto-Failover LLM bagi pemula.
+```txt
+DOCS/
+```
 
----
+Important docs:
 
-### ⚙️ Pedoman Orkestrasi AI (`DOCS/ORCHESTRATOR/`)
-
-Dokumen khusus yang mengatur alur orkestrasi pengerjaan AI:
-
-- 📄 **[ORCHESTRATION_BLUEPRINT.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/ORCHESTRATOR/ORCHESTRATION_BLUEPRINT.md)**: Peran 6 AI Agent pembangun dan perutean tugas Backend (Thinker vs. Executor).
-- 📄 **[API_USABILITY_RULES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/ORCHESTRATOR/API_USABILITY_RULES.md)**: Pedoman Developer Experience (DX) untuk standardisasi format JSON dan dokumentasi Swagger UI.
-
----
-
-### 🎯 Pedoman Retensi Integrasi (`DOCS/RETENTION/`)
-
-Aturan khusus untuk mengoptimalkan pengalaman pengembang dan reduksi friksi:
-
-- 📄 **[API_RETENTION_RULES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/RETENTION/API_RETENTION_RULES.md)**: Sinyal kelelahan integrasi developer (422 error, latency tinggi) dan otomatisasi _failover_ LLM.
+- `SYSTEM_ARCHITECTURE.md`
+- `DEVELOPMENT_PLAYBOOK.md`
+- `ORCHESTRATION_BLUEPRINT.md`
+- `API_USABILITY_RULES.md`
+- `AI_PROVIDER_ROUTING_GUIDE.md`
 
 ---
 
-### ⚡ Pedoman Ketergunaan REST (`DOCS/INTERACTION/`)
+# 📈 Evolution Ready
 
-Prinsip desain antarmuka REST API dan optimalisasi payload:
+Architecture dirancang untuk migrasi bertahap:
 
-- 📄 **[API_USABILITY_PRINCIPLES.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/INTERACTION/API_USABILITY_PRINCIPLES.md)**: Aturan kebab-case rute URL, semantik penamaan kunci JSON, serta anggaran latensi (latency budgets).
-
----
-
-## 📉 9. Analisis Arsitektur & Hambatan Evolusi (Evolutionary Analysis)
-
-Untuk memastikan proyek ini dapat dikembangkan dalam skala besar tanpa hambatan performa, kami melakukan audit teknis mendalam terhadap kode saat ini:
-
-- 📂 **[analytics_projects/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/analytics_projects/)**
-  - 📄 **[evolutionary_bottlenecks.md](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/analytics_projects/evolutionary_bottlenecks.md)**: Detail analisis teknis terkait hambatan file-locking, thread starvation sinkronus, dan peta jalan migrasi asinkronus SQLite/SQLAlchemy.
+| Current | Future Evolution |
+|---|---|
+| JSON Storage | PostgreSQL |
+| Sync Flow | Async Queue |
+| Single Workflow | Multi Workflow Engine |
+| Local Router | Distributed Orchestrator |
+| Basic Logging | Full Observability |
 
 ---
 
-## 📝 10. Riwayat Migrasi & Fitur Terimplementasi (Implementation History)
+# 🎯 Why This Repo Exists
 
-Pelacakan log perubahan besar dan migrasi arsitektur pada repositori:
+Karena banyak backend AI project:
 
-- 📂 **[HISTORY_IMPLEMENT/](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/DOCS/HISTORY_IMPLEMENT/)**
-  - **2026_05_18**:
-    - **Refaktorisasi Config Dinamis & AI Router** (`2026_05_18_backend_architecture_refactoring.md`) - Memisahkan konfigurasi runtime dan mendukung failover penyedia AI otomatis.
-  - **2026_05_19**:
-    - **Penyelarasan Arsitektur, Validasi API & Tracing Request** (`2026_05_19_api_hardening_and_observability.md`) - Konsolidasi standardisasi impor `BASE_DIR`, pengerasan skema Pydantic masukan, dan pelacakan request_id terpadu.
+- terlalu overengineered 😭
+- terlalu tightly coupled 😭
+- provider lock-in 😭
+- prompt hardcoded 😭
+- susah diskalakan 😭
+
+Repo ini mencoba jadi:
+
+> lightweight orchestration foundation
+
+buat experimentation, scaling, dan workflow evolution 😎🔥
+
+---
+
+# 👨‍💻 Built For
+
+Cocok untuk:
+
+- AI backend builders
+- workflow engineers
+- automation developers
+- orchestration experimenters
+- AI-agent collaborative development
+
+---
+
+# 📜 License
+
+MIT License
+
+---
+
+# 😎 FINAL WORD
+
+System boleh scale 😎🔥
+
+Team boleh gede 😎🔥
+
+TAPI:
+
+unsur kegoblinan tidak boleh padam 😭🔥
