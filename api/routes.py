@@ -120,31 +120,14 @@ def create_issue_summary(payload: IssueRequest):
     5. Program mengembalikan hasil tersebut dibungkus skema `IssueResponse`.
     """
     request_id = uuid.uuid4().hex
-    try:
-        # ─── LANGKAH 1: Eksekusi Alur Kerja (Workflow) ───
-        # Di sinilah integrasi terjadi. Kita melempar beban kerja ke workflow.
-        # Perhatikan: Router TIDAK tahu bagaimana AI memprosesnya, Router hanya tahu memanggil execute().
-        result = IssueSummaryWorkflow.execute(payload.text, request_id=request_id)
-        
-        # ─── LANGKAH 3: Kembalikan Response ke Client ───
-        # Data diambil dari dictionary hasil workflow, lalu dimasukkan ke skema Pydantic.
-        return IssueResponse(
-            summary=result["summary"],
-            request_id=request_id
-        )
-        
-    except ValueError as ve:
-        # Menangkap error bisnis yang sengaja kita lempar dari workflow (misal validasi internal)
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(ve)
-        )
-    except Exception as e:
-        # Pengaman terakhir (Safe Guard) jika ada error server tak terduga (misal file database error/hilang)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Terjadi kegagalan server internal: {str(e)}"
-        )
+    # ─── LANGKAH 1: Eksekusi Alur Kerja (Workflow) ───
+    result = IssueSummaryWorkflow.execute(payload.text, request_id=request_id)
+    
+    # ─── LANGKAH 2: Kembalikan Response ke Client ───
+    return IssueResponse(
+        summary=result["summary"],
+        request_id=request_id
+    )
 
 
 # =====================================================================
@@ -166,14 +149,6 @@ def get_issue_history():
     2. Program memanggil LocalStorage untuk mengambil list dari berkas `history.json`.
     3. List data JSON tersebut dikembalikan dan divalidasi otomatis oleh List[HistoryRecordResponse].
     """
-    try:
-        # Membaca data langsung dari layer LocalStorage
-        records = LocalStorage.get_all_records()
-        return records
-        
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Gagal membaca data riwayat: {str(e)}"
-        )
+    # Membaca data langsung dari layer LocalStorage
+    return LocalStorage.get_all_records()
 
