@@ -54,6 +54,64 @@ graph TD
 
 ---
 
+# 🌳 Repository Tree
+
+```txt
+API_Integration/
+├── api/
+│   ├── __init__.py
+│   └── routes.py
+│
+├── core/
+│   ├── __init__.py
+│   ├── config.py
+│   └── error_handlers.py
+│
+├── workflows/
+│   ├── __init__.py
+│   └── issue_summary.py
+│
+├── prompts/
+│   ├── __init__.py
+│   ├── loader.py
+│   └── issue_summary.txt
+│
+├── services/
+│   ├── __init__.py
+│   ├── ai_service.py
+│   └── ai/
+│       ├── __init__.py
+│       ├── base.py
+│       ├── facade.py
+│       ├── models.py
+│       ├── registry.py
+│       ├── router.py
+│       └── providers/
+│           ├── gemini_provider.py
+│           ├── mock_provider.py
+│           ├── ollama_provider.py
+│           ├── openai_provider.py
+│           └── openrouter_provider.py
+│
+├── storage/
+│   ├── __init__.py
+│   ├── history.json
+│   └── local_storage.py
+│
+├── DOCS/
+│   ├── GLOBAL_DOCS/
+│   ├── HISTORY_IMPLEMENT/
+│   ├── INTERACTION/
+│   ├── ORCHESTRATOR/
+│   └── RETENTION/
+│
+├── analytics_projects/
+├── main.py
+└── README.md
+```
+
+---
+
 # 🗺️ Structure Map
 
 ## `main.py`
