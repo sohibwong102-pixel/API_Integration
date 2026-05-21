@@ -1,151 +1,315 @@
+# 😎🔥 CIVIL GROUP PROJECT
+
 <div align="center">
 
-# API_Integration 😎🔥
-
-### tempat seluruh kegoblinan orchestration dikumpulkan secara civilized
+> Operational Workflow API — workflow-first AI orchestration backend.
 
 <img src="https://img.shields.io/badge/status-chaos%20but%20working-ff69b4?style=for-the-badge">
 <img src="https://img.shields.io/badge/powered%20by-goblin%20engineering-green?style=for-the-badge">
 <img src="https://img.shields.io/badge/architecture-orchestration-blue?style=for-the-badge">
-<img src="https://img.shields.io/badge/focus-retention%20system-orange?style=for-the-badge">
+<img src="https://img.shields.io/badge/focus-workflow%20system-orange?style=for-the-badge">
 <img src="https://img.shields.io/badge/mental%20state-still%20surviving-red?style=for-the-badge">
 
 </div>
 
----
+Project ini dibuat untuk membangun backend AI yang:
 
-# 🧠 Apa Ini?
-
-`API_Integration` adalah pusat eksperimen, integrasi, orchestration, dan automation system.
-
-Repo ini dibuat supaya:
-- API tidak jadi script tempel-tempelan 😭
-- provider bisa diatur lewat abstraction layer
-- workflow bisa scalable
-- orchestration tetap waras walaupun goblin level meningkat
+- modular
+- scalable
+- provider-agnostic
+- orchestration-oriented
+- AI-agent friendly
 
 ---
 
-# 🔥 Filosofi Repo
+# 🧠 Core Philosophy
+
+Repo ini menggunakan:
 
 ```txt
-system boleh scale 😎🔥
-team boleh gede 😎🔥
+Workflow Conductor Architecture
+```
 
-TAPI:
-unsur kegoblinan tidak boleh padam 😭🔥
+Artinya:
+
+- API tidak pegang business logic
+- workflow menjadi pusat orchestration
+- AI provider dibuat modular
+- prompt dipisah dari code
+- storage dipisah dari workflow
+
+🔥 tujuan akhirnya:
+
+- maintainability
+- scalability
+- clean architecture
+- beginner readability
+
+---
+
+# 🏗️ Request Journey
+
+```mermaid
+graph TD
+    Client --> API
+    API --> Workflow
+    Workflow --> Prompt
+    Workflow --> AI
+    Workflow --> Storage
+    AI --> Router
+    Router --> OpenAI
+    Router --> Gemini
+    Router --> Ollama
 ```
 
 ---
 
-# 🏗️ Fokus System
-
-## Yang Dibangun Disini
-- AI orchestration
-- provider abstraction
-- automation workflow
-- routing system
-- fallback system
-- execution pipeline
-- retention-oriented architecture
-- modular integration layer
-
----
-
-# 📂 Struktur Docs
+# 🌳 Repository Tree
 
 ```txt
-DOCS/
-├── AGENTS/         → role & ecosystem agent
-├── DOCTRINE/       → prinsip sacred goblin engineering
-├── GLOBAL/         → global system knowledge
-├── HISTORY/        → archaeology engineering
-├── ARCHITECTURE/   → otak sistem & alur besar
-├── FLOWS/          → pipeline & orchestration flow
-├── PLAYBOOKS/      → survival manual
-└── EXPERIMENTS/    → tempat kegoblinan legal
+API_Integration/
+├── api/
+│   ├── __init__.py
+│   └── routes.py
+│
+├── core/
+│   ├── __init__.py
+│   ├── config.py
+│   └── error_handlers.py
+│
+├── workflows/
+│   ├── __init__.py
+│   └── issue_summary.py
+│
+├── prompts/
+│   ├── __init__.py
+│   ├── loader.py
+│   └── issue_summary.txt
+│
+├── services/
+│   ├── __init__.py
+│   ├── ai_service.py
+│   └── ai/
+│       ├── __init__.py
+│       ├── base.py
+│       ├── facade.py
+│       ├── models.py
+│       ├── registry.py
+│       ├── router.py
+│       └── providers/
+│           ├── gemini_provider.py
+│           ├── mock_provider.py
+│           ├── ollama_provider.py
+│           ├── openai_provider.py
+│           └── openrouter_provider.py
+│
+├── storage/
+│   ├── __init__.py
+│   ├── history.json
+│   └── local_storage.py
+│
+├── DOCS/
+│   ├── GLOBAL_DOCS/
+│   ├── HISTORY_IMPLEMENT/
+│   ├── INTERACTION/
+│   ├── ORCHESTRATOR/
+│   └── RETENTION/
+│
+├── analytics_projects/
+├── main.py
+└── README.md
 ```
 
 ---
 
-# 🤖 Ecosystem Agent
+# 🗺️ Structure Map
 
-Repo ini menggunakan pendekatan pseudo multi-agent workflow.
+## `main.py`
+FastAPI application entrypoint.
 
-Contoh role:
+Tugas:
+- bootstrap app
+- setup middleware
+- register router
+- validate config
+- register error handlers
+
+---
+
+# ⚙️ `core/`
+Centralized system foundation.
+
+## `core/config.py`
+Runtime settings manager.
+
+## `core/error_handlers.py`
+Centralized API exception handling.
+
+## `core/__init__.py`
+Official core access layer.
+
+---
+
+# 🌐 `api/`
+HTTP transport layer.
+
+## `api/routes.py`
+FastAPI routes + Pydantic validation.
+
+🔥 tidak boleh pegang business logic.
+
+---
+
+# 🧠 `workflows/`
+Business orchestration layer.
+
+## `workflows/issue_summary.py`
+Workflow conductor.
+
+Flow:
+
+```txt
+load prompt
+→ call AI
+→ save history
+→ return response
+```
+
+---
+
+# 📝 `prompts/`
+Prompt management layer.
+
+## `prompts/loader.py`
+Prompt loader helper.
+
+## `prompts/issue_summary.txt`
+AI instruction template.
+
+---
+
+# 🤖 `services/`
+External integration layer.
+
+## `services/ai_service.py`
+Backward compatibility gateway.
+
+---
+
+# 🤖 `services/ai/`
+Modular AI orchestration subsystem.
+
+## `base.py`
+Provider contracts/interfaces.
+
+## `router.py`
+AI provider routing engine.
+
+## `registry.py`
+Provider registry mapping.
+
+## `facade.py`
+Unified AI access point.
+
+## `providers/`
+Provider adapters:
+- OpenAI
+- Gemini
+- Ollama
+- OpenRouter
+- Mock
+
+---
+
+# 💾 `storage/`
+Persistence layer.
+
+## `local_storage.py`
+JSON storage helper.
+
+## `history.json`
+Local request history.
+
+---
+
+# 📚 `DOCS/`
+Governance doctrine ecosystem.
+
+Berisi:
+- architecture doctrine
+- orchestration rules
+- AI agent governance
+- retention principles
+- usability standards
+
+---
+
+## `GLOBAL_DOCS/`
+System architecture & development doctrine.
+
+## `ORCHESTRATOR/`
+AI orchestration blueprint & role separation.
+
+## `RETENTION/`
+Developer experience & failover strategy.
+
+## `INTERACTION/`
+REST usability principles.
+
+## `HISTORY_IMPLEMENT/`
+Architecture migration history.
+
+---
+
+# 📉 `analytics_projects/`
+Architecture bottleneck & evolution analysis.
+
+---
+
+# 👥 AI Agent Ecosystem
+
+Defined AI roles:
+
+- MANAGER_ORCHESTRATOR
+- ARCHITECTURE_GUARDIAN
+- BACKEND_SPECIALIST
 - BACKEND_EXECUTOR
-- PROMPT_ENGINEER
-- PROMPT_OPTIMIZER
-- REVIEW_SUMMARIZER
-- TASK_ORGANIZER
+- PROMPT_SPECIALIST
+- TASK_AGENT_OPTIMIZER
 
-Tujuan:
+🔥 repo ini bukan sekadar backend.
+
+Tapi:
+
 ```txt
-pecah chaos jadi responsibility 😭🔥
+AI collaborative development ecosystem
 ```
 
 ---
 
-# 🧩 Core Mindset
+# 🚀 Quick Start
 
-## Repo Ini Bukan:
-- sekadar kumpulan script
-- folder random
-- eksperimen tanpa arah
+```bash
+git clone https://github.com/sohibwong102-pixel/API_Integration.git
+cd API_Integration
 
-## Repo Ini Adalah:
-- orchestration playground
-- system memory
-- automation laboratory
-- evolving AI infrastructure
+python3 -m venv .venv
+source .venv/bin/activate
 
----
+pip install fastapi uvicorn requests
 
-# 📜 Doctrine Goblin Engineering
+python main.py
+```
+
+Swagger Docs:
 
 ```txt
-workflow > hype tools
-
-AI bukan magic 😎
-AI adalah komponen sistem 😎
-
-agent bukan pondasi
-agent adalah accelerator 😭🔥
+http://127.0.0.1:8000/docs
 ```
 
 ---
 
-# ⚠️ Warning
-
-Masuk repo ini berarti siap melihat:
-- architecture existential crisis
-- orchestration chaos
-- folder evolution aneh
-- dokumentasi absurd
-- commit goblin
-- experimentation berlebihan
-
-Tapi tenang:
-```txt
-minimal documented 😭🔥
-```
-
----
-
-# 🚀 Long Term Goal
-
-Membangun:
-- centralized orchestration system
-- reusable integration layer
-- scalable AI workflow ecosystem
-- knowledge base anti-amnesia
-- infrastructure yang bisa survive growth
-
----
-
-<div align="center">
-
-## 😎🔥 CIVIL RULE #1
+# 😎 Final Words
 
 ```txt
 system boleh scale 😎🔥
@@ -154,5 +318,3 @@ team boleh gede 😎🔥
 TAPI:
 unsur kegoblinan tidak boleh padam 😭🔥
 ```
-
-</div>
