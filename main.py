@@ -41,7 +41,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api import router as api_router
 from core import settings, register_error_handlers
-
+from api.openwebui_routes import router as openwebui_router
 # 🛡️ VALIDASI STARTUP KRITIS (Fail Fast)
 # Memastikan semua variabel lingkungan yang wajib untuk provider aktif telah dikonfigurasi dengan benar.
 settings.validate()
@@ -59,6 +59,8 @@ app = FastAPI(
     docs_url="/docs",      # URL untuk mengakses Swagger UI (Dokumentasi API interaktif)
     redoc_url="/redoc"     # URL untuk mengakses ReDoc UI (Format alternatif dokumen API)
 )
+
+app.include_router(openwebui_router)
 
 # Registrasi Centralized Error Handlers
 register_error_handlers(app)
