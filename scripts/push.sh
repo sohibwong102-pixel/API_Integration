@@ -2,6 +2,7 @@
 
 MESSAGE=${1:-"update goblin 😎🔥"}
 
+sleep 2
 
 if gum spin --spinner monkey --title "😎 adding files..." -- git add -A; then
     echo "✅ add success"
