@@ -1,5 +1,6 @@
 <div align="center">
-# 😎🔥 CIVIL GROUP PROJECT
+
+<h1 align="center">😎🔥 CIVILIZATION GROUP PROJECT</h1>
 
 
 > Operational Workflow API — workflow-first AI orchestration backend.
