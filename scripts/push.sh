@@ -2,11 +2,9 @@
 
 MESSAGE=${1:-"update goblin 😎🔥"}
 
-sleep 2
-
-if gum spin --spinner monkey --title "😎 adding files..." -- git add -A; then
+if gum spin --spinner monkey --title "😎 adding files..." -- sleep 3 ; then git add -A
     echo "✅ add success"
-    sleep 3
+    sleep 1
 else
     echo "❌ add failed"
     exit 1
@@ -14,7 +12,7 @@ fi
 
 if gum spin --spinner monkey --title "😎 committing..." -- git commit -m "$MESSAGE"; then
     echo "✅ commit success"
-    sleep 3
+    sleep 1
 else
     echo "❌ commit failed"
     exit 1
