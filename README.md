@@ -1,6 +1,6 @@
+<div align="center">
 # 😎🔥 CIVIL GROUP PROJECT
 
-<div align="center">
 
 > Operational Workflow API — workflow-first AI orchestration backend.
 
