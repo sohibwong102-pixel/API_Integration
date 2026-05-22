@@ -1,0 +1,27 @@
+# <!-- file ini digunakan sebagai penunjang kedisiplinan BACKEND_EXECUTOR -->
+
+===========================================================================
+
+# DO_NOT_TOUCH
+
+===========================================================================
+
+- do not redesign workflow conductor architecture
+- do not bypass provider abstraction layer
+- do not move business logic into handlers
+- do not introduce hidden workflow mutation
+- do not tightly couple backend to Telegram
+- do not create direct provider dependency in workflows
+- do not bypass centralized prompt management
+- do not create giant orchestration files
+- do not introduce premature microservice patterns
+- do not create enterprise abstraction without real scaling pressure
+- do not create circular dependency between layers
+- do not turn utils into business logic containers
+- do not merge unrelated responsibilities into single service
+- do not spread orchestration logic across random modules
+- do not mutate shared state implicitly
+- do not create hidden continuation logic
+- do not bypass storage boundaries
+- do not break provider-agnostic architecture
+- do not destroy workflow portability
