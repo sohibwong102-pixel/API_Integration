@@ -1,0 +1,7 @@
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid request payload. Field [body -> text]: Field required"
+  }
+}

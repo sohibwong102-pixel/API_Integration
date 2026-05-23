@@ -1,4 +1,5 @@
 import logging
+from typing import Any, Dict
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -18,6 +19,16 @@ Notes:
     with a custom application exception (e.g. `AppError` or `BusinessValidationError`)
     so that error handling is explicit and cannot be accidentally misused.
 """
+
+def _build_error_context(request: Request) -> Dict[str, Any]:
+    # Structured context untuk observability 5xx agar root cause lebih mudah ditelusuri.
+    return {
+        "method": request.method,
+        "path": request.url.path,
+        "query": str(request.query_params),
+        "client_host": request.client.host if request.client else None,
+        "request_id": request.headers.get("x-request-id"),
+    }
 
 def register_error_handlers(app: FastAPI):
     """
@@ -53,17 +64,32 @@ def register_error_handlers(app: FastAPI):
             # 503 -> SERVICE_UNAVAILABLE (baru)
             code = "SERVICE_UNAVAILABLE"
         else:
-            # Fallback behavior:
-            # - Jika unknown 5xx -> INTERNAL_SERVER_ERROR (hanya untuk true unknown 5xx)
-            # - Jika kode lain yang tidak terdefinisi -> gunakan label generik `HTTP_<code>`
+            # Static fallback enum strategy (contract-stable):
+            # - unknown 5xx -> INTERNAL_SERVER_ERROR
+            # - unknown 4xx -> CLIENT_ERROR
+            # - selain itu -> INTERNAL_SERVER_ERROR
+            # Catatan:
+            # Tidak menggunakan dynamic code `HTTP_<status_code>` agar consumer
+            # tidak bergantung pada enum yang berubah-ubah.
             if 500 <= status_code < 600:
                 code = "INTERNAL_SERVER_ERROR"
+            elif 400 <= status_code < 500:
+                code = "CLIENT_ERROR"
             else:
-                code = f"HTTP_{status_code}"
+                code = "INTERNAL_SERVER_ERROR"
 
-        # Log details only for client errors; avoid logging raw internal details for 5xx
+        # Untuk 5xx, detail exception asli tetap dicatat di internal log (tidak dikirim ke client).
         if status_code >= 500:
-            logger.error(f"HTTP Exception [{status_code}]: Internal server error")
+            logger.error(
+                "http_exception_5xx",
+                extra={
+                    "event": "http_exception_5xx",
+                    "status_code": status_code,
+                    "exception_type": type(exc).__name__,
+                    "exception_detail": repr(exc.detail),
+                    "context": _build_error_context(request),
+                },
+            )
         else:
             logger.error(f"HTTP Exception [{status_code}]: {exc.detail}")
 
@@ -133,8 +159,17 @@ def register_error_handlers(app: FastAPI):
 
     @app.exception_handler(Exception)
     async def unexpected_exception_handler(request: Request, exc: Exception):
-        # Logging internal lengkap beserta traceback untuk debugging internal
-        logger.exception("Unexpected system error occurred:")
+        # 5xx tak terduga: simpan traceback + context terstruktur untuk root cause analysis.
+        logger.exception(
+            "unexpected_exception_5xx",
+            extra={
+                "event": "unexpected_exception_5xx",
+                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "exception_type": type(exc).__name__,
+                "exception_message": str(exc),
+                "context": _build_error_context(request),
+            },
+        )
 
         # Mengembalikan error generik tanpa membocorkan detail internal traceback ke client
         return JSONResponse(

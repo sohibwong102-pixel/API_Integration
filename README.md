@@ -146,6 +146,37 @@ Runtime settings manager.
 ## `core/error_handlers.py`
 Centralized API exception handling.
 
+### Error Contract (`error.code`) - Stable Enum Policy
+
+Response error selalu berbentuk:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Public message"
+  }
+}
+```
+
+Enum `error.code` yang dipakai:
+- `BAD_REQUEST` (400)
+- `UNAUTHORIZED` (401)
+- `FORBIDDEN` (403)
+- `NOT_FOUND` (404)
+- `METHOD_NOT_ALLOWED` (405)
+- `REQUEST_TIMEOUT` (408)
+- `VALIDATION_ERROR` (422)
+- `RATE_LIMITED` (429)
+- `SERVICE_UNAVAILABLE` (503)
+- `INTERNAL_SERVER_ERROR` (500 dan unknown 5xx)
+- `CLIENT_ERROR` (unknown 4xx yang belum memiliki mapping spesifik)
+
+Catatan kontrak:
+- Tidak ada dynamic enum `HTTP_<status_code>`.
+- Tujuannya agar contract ke API consumer predictable dan stabil lintas rilis.
+
 ## `core/__init__.py`
 Official core access layer.
 

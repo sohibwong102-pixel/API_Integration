@@ -1,0 +1,1 @@
+curl -i -X POST http://localhost:8011/probe/validation -H 'Content-Type: application/json' -d '{}'
