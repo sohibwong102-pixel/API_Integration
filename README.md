@@ -123,7 +123,7 @@ API_Integration/
 │   └── local_storage.py         # JSON storage helper
 │
 ├── DOCS/                        # governance & architecture docs
-│   ├── GLOBAL_DOCS/             # development doctrine
+│   ├── GLOBAL/                  # development doctrine
 │   ├── HISTORY/                 # implementation history
 │   ├── INTERACTION/             # REST usability principles
 │   ├── ORCHESTRATOR/            # orchestration blueprint
