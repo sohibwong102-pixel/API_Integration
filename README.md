@@ -2,7 +2,6 @@
 
 <h1 align="center">😎🔥 CIVILIZATION GROUP PROJECT</h1>
 
-
 > Operational Workflow API — workflow-first AI orchestration backend.
 
 <img src="https://img.shields.io/badge/status-chaos%20but%20working-ff69b4?style=for-the-badge">
@@ -20,6 +19,7 @@ Project ini dibuat untuk membangun backend AI yang:
 - provider-agnostic
 - orchestration-oriented
 - AI-agent friendly
+- contract-driven
 
 ---
 
@@ -38,6 +38,7 @@ Artinya:
 - AI provider dibuat modular
 - prompt dipisah dari code
 - storage dipisah dari workflow
+- request lifecycle dibuat centralized
 
 🔥 tujuan akhirnya:
 
@@ -45,6 +46,7 @@ Artinya:
 - scalability
 - clean architecture
 - beginner readability
+- predictable contract
 
 ---
 
@@ -69,232 +71,230 @@ graph TD
 
 ```txt
 API_Integration/
-├── api/
+├── api/                         # HTTP transport layer
 │   ├── __init__.py
-│   └── routes.py
+│   └── routes.py                # endpoint & request validation
 │
-├── core/
+├── core/                        # centralized system foundation
 │   ├── __init__.py
-│   ├── config.py
-│   └── error_handlers.py
+│   ├── config.py                # runtime settings manager
+│   └── error_handlers.py        # centralized API error handling
 │
-├── workflows/
+├── workflows/                   # orchestration layer
 │   ├── __init__.py
-│   └── issue_summary.py
-│
-├── prompts/
-│   ├── __init__.py
-│   ├── loader.py
-│   └── issue_summary.txt
-│
-├── services/
-│   ├── __init__.py
-│   ├── ai_service.py
-│   └── ai/
+│   └── issue/                   # issue AI ecosystem
 │       ├── __init__.py
-│       ├── base.py
-│       ├── facade.py
-│       ├── models.py
-│       ├── registry.py
-│       ├── router.py
-│       └── providers/
+│       ├── summary.py           # issue summarization workflow
+│       ├── categorize.py        # issue categorization workflow
+│       ├── severity.py          # severity classification workflow
+│       ├── tags.py              # tag extraction workflow
+│       └── sentiment.py         # sentiment analysis workflow
+│
+├── prompts/                     # prompt management layer
+│   ├── __init__.py
+│   ├── loader.py                # prompt loader helper
+│   └── issue/                   # issue capability prompts
+│       ├── summary.txt
+│       ├── categorize.txt
+│       ├── severity.txt
+│       ├── tags.txt
+│       └── sentiment.txt
+│
+├── services/                    # external integration layer
+│   ├── __init__.py
+│   ├── ai_service.py            # backward compatibility gateway
+│   └── ai/                      # modular AI subsystem
+│       ├── __init__.py
+│       ├── base.py              # provider contracts/interfaces
+│       ├── facade.py            # unified AI access layer
+│       ├── models.py            # AI model definitions
+│       ├── registry.py          # provider registry mapping
+│       ├── router.py            # provider routing engine
+│       └── providers/           # AI provider adapters
 │           ├── gemini_provider.py
 │           ├── mock_provider.py
 │           ├── ollama_provider.py
 │           ├── openai_provider.py
 │           └── openrouter_provider.py
 │
-├── storage/
+├── storage/                     # persistence layer
 │   ├── __init__.py
-│   ├── history.json
-│   └── local_storage.py
+│   ├── history.json             # local request history
+│   └── local_storage.py         # JSON storage helper
 │
-├── DOCS/
-│   ├── GLOBAL_DOCS/
-│   ├── HISTORY_IMPLEMENT/
-│   ├── INTERACTION/
-│   ├── ORCHESTRATOR/
-│   └── RETENTION/
+├── DOCS/                        # governance & architecture docs
+│   ├── GLOBAL_DOCS/             # development doctrine
+│   ├── HISTORY/                 # implementation history
+│   ├── INTERACTION/             # REST usability principles
+│   ├── ORCHESTRATOR/            # orchestration blueprint
+│   └── RETENTION/               # developer experience strategy
 │
-├── analytics_projects/
-├── main.py
-└── README.md
+├── analytics_projects/          # architecture analysis workspace
+├── main.py                      # FastAPI application entrypoint
+└── README.md                    # project documentation
 ```
 
 ---
 
-# 🗺️ Structure Map
+# 🌐 API Layer
 
-## `main.py`
-FastAPI application entrypoint.
+## `api/routes.py`
 
-Tugas:
-- bootstrap app
-- setup middleware
-- register router
-- validate config
-- register error handlers
+FastAPI routes + request validation.
 
----
+Rules:
+- transport layer only
+- no business logic
+- workflows remain orchestration source
+- request_id propagated from request lifecycle
 
-# ⚙️ `core/`
-Centralized system foundation.
+### Active Endpoints
 
-## `core/config.py`
-Runtime settings manager.
+| Endpoint | Response |
+|---|---|
+| `POST /api/issue/summary` | `{ "summary": "..." }` |
+| `POST /api/issue/categorize` | `{ "category": "..." }` |
+| `POST /api/issue/severity` | `{ "severity": "..." }` |
+| `POST /api/issue/tags` | `{ "tags": ["..."] }` |
+| `POST /api/issue/sentiment` | `{ "sentiment": "..." }` |
 
-## `core/error_handlers.py`
-Centralized API exception handling.
+### Legacy Compatibility
 
-### Error Contract (`error.code`) - Stable Enum Policy
+Legacy endpoint tetap tersedia:
 
-Response error selalu berbentuk:
+```txt
+POST /api/issue-summary
+```
+
+Response:
 
 ```json
 {
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Public message"
-  }
+  "summary": "...",
+  "request_id": "..."
 }
 ```
 
-Enum `error.code` yang dipakai:
-- `BAD_REQUEST` (400)
-- `UNAUTHORIZED` (401)
-- `FORBIDDEN` (403)
-- `NOT_FOUND` (404)
-- `METHOD_NOT_ALLOWED` (405)
-- `REQUEST_TIMEOUT` (408)
-- `VALIDATION_ERROR` (422)
-- `RATE_LIMITED` (429)
-- `SERVICE_UNAVAILABLE` (503)
-- `INTERNAL_SERVER_ERROR` (500 dan unknown 5xx)
-- `CLIENT_ERROR` (unknown 4xx yang belum memiliki mapping spesifik)
-
-Catatan kontrak:
-- Tidak ada dynamic enum `HTTP_<status_code>`.
-- Tujuannya agar contract ke API consumer predictable dan stabil lintas rilis.
-
-## `core/__init__.py`
-Official core access layer.
-
 ---
 
-# 🌐 `api/`
-HTTP transport layer.
+# 🔍 Request Lifecycle
 
-## `api/routes.py`
-FastAPI routes + Pydantic validation.
-
-🔥 tidak boleh pegang business logic.
-
----
-
-# 🧠 `workflows/`
-Business orchestration layer.
-
-## `workflows/issue_summary.py`
-Workflow conductor.
+Request ownership berada di boundary layer (`main.py`).
 
 Flow:
 
 ```txt
+client request
+→ request_id injected/restored
+→ stored in request.state
+→ propagated across layers
+→ exposed via X-Request-ID header
+→ structured access logging
+```
+
+Structured log fields:
+- request_id
+- method
+- path
+- status_code
+- duration_ms
+
+---
+
+# 🧠 Workflow Architecture
+
+Workflow bersifat:
+
+- orchestration-only
+- deterministic
+- reusable
+- provider-agnostic
+- contract-focused
+
+Flow umum:
+
+```txt
 load prompt
 → call AI
-→ save history
+→ normalize output
+→ optional persistence
 → return response
 ```
 
----
-
-# 📝 `prompts/`
-Prompt management layer.
-
-## `prompts/loader.py`
-Prompt loader helper.
-
-## `prompts/issue_summary.txt`
-AI instruction template.
+Khusus workflow `summary`:
+- menyimpan history request
+- memakai request_id lifecycle existing
 
 ---
 
-# 🤖 `services/`
-External integration layer.
+# 📝 Prompt System
 
-## `services/ai_service.py`
-Backward compatibility gateway.
+Prompt dipisahkan per capability.
+
+Rules:
+- concise
+- deterministic
+- single responsibility
+- no markdown output
+- no JSON output
+
+Tujuan:
+- easier maintenance
+- safer iteration
+- isolated prompt tuning
+- reusable orchestration flow
 
 ---
 
-# 🤖 `services/ai/`
-Modular AI orchestration subsystem.
+# 🤖 AI Provider System
 
-## `base.py`
-Provider contracts/interfaces.
+Supported providers:
 
-## `router.py`
-AI provider routing engine.
-
-## `registry.py`
-Provider registry mapping.
-
-## `facade.py`
-Unified AI access point.
-
-## `providers/`
-Provider adapters:
 - OpenAI
 - Gemini
 - Ollama
 - OpenRouter
 - Mock
 
+Architecture:
+
+```txt
+Facade
+→ Router
+→ Registry
+→ Provider Adapter
+```
+
+Tujuan:
+- provider abstraction
+- fallback flexibility
+- centralized orchestration
+- easier future expansion
+
 ---
 
-# 💾 `storage/`
-Persistence layer.
+# 📚 DOCS/
 
-## `local_storage.py`
-JSON storage helper.
-
-## `history.json`
-Local request history.
-
----
-
-# 📚 `DOCS/`
 Governance doctrine ecosystem.
 
 Berisi:
 - architecture doctrine
-- orchestration rules
-- AI agent governance
+- orchestration standards
+- AI workflow governance
 - retention principles
-- usability standards
+- migration/change history
+- implementation evolution
 
----
+## `HISTORY/`
 
-## `GLOBAL_DOCS/`
-System architecture & development doctrine.
+Implementation evolution tracking.
 
-## `ORCHESTRATOR/`
-AI orchestration blueprint & role separation.
-
-## `RETENTION/`
-Developer experience & failover strategy.
-
-## `INTERACTION/`
-REST usability principles.
-
-## `HISTORY_IMPLEMENT/`
-Architecture migration history.
-
----
-
-# 📉 `analytics_projects/`
-Architecture bottleneck & evolution analysis.
+Digunakan untuk:
+- synchronization
+- migration notes
+- architecture changes
+- deprecated behavior cleanup
+- compatibility tracking
 
 ---
 
