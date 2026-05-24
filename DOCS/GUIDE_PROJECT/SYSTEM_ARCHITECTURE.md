@@ -1,5 +1,5 @@
 # 🏗️ SYSTEM_ARCHITECTURE.md
-> **Arsitektur & Model Aliran Sistem - `summary_endpoint`**
+> **Arsitektur & Model Aliran Sistem - `CIVILIZATION GROUP PROJECT`**
 >
 > Dokumen ini mendefinisikan struktur tingkat tinggi, tanggung jawab layer, dan aliran data dalam project **Operational Workflow API Backend**.
 
@@ -25,9 +25,9 @@ Sistem ini menerapkan prinsip **Loose Coupling** dan **Single Responsibility** y
 
 ```mermaid
 graph TD
-    Client((API Client / Web / Mobile App)) -->|POST /api/issue-summary| Router[api/routes.py]
+    Client((API Client / Web / Mobile App)) -->|POST /api/issue/summary| Router[api/routes.py]
     Router -->|1. Validasi Input| Pydantic((Pydantic Schema))
-    Router -->|2. Delegasikan Kerja| Workflow[workflows/issue_summary.py]
+    Router -->|2. Delegasikan Kerja| Workflow[workflows/issue/summary.py]
     
     subgraph Workflow Conductor Layer
         Workflow -->|3. Muat Template| Prompts[prompts/loader.py]
@@ -73,5 +73,5 @@ Setiap direktori memiliki tanggung jawab yang terisolasi dengan ketat. Modul di 
 
 1. **Strict Asynchronous Integration**: Seluruh operasi network I/O wajib non-blocking. Meskipun model lokal saat ini berjalan sinkron untuk kemudahan testing offline, struktur integrasi dirancang untuk skalabilitas asinkron penuh.
 2. **Contract-First Services**: Setiap service baru (seperti model AI baru) wajib mengimplementasikan interface kontrak yang didefinisikan oleh `BaseAIService`.
-3. **No Direct Storage Access**: Komponen `api/` atau `services/` dilarang keras mengakses berkas JSON di `storage/` secara langsung. Selalu gunakan adapter dari [storage/local_storage.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/storage/local_storage.py).
+3. **No Direct Storage Access**: Komponen `api/` atau `services/` dilarang keras mengakses berkas JSON di `storage/` secara langsung. Selalu gunakan adapter dari `storage/local_storage.py`.
 4. **FastAPI Error Isolation**: Selalu tangkap exception bisnis di dalam Router dan bungkus dengan `HTTPException` standar FastAPI untuk memastikan API mengembalikan pesan kesalahan yang rapi dan seragam kepada client.

@@ -11,9 +11,14 @@ Berikut adalah katalog endpoint API aktif yang dapat dikonsumsi oleh client saat
 
 | Nama Fitur / Endpoint | Jenis Request | Tujuan & Alur Bisnis | Berkas Utama yang Terlibat | Tingkat Risiko |
 | :--- | :--- | :--- | :--- | :--- |
-| **Welcome / Health Check** | `GET /` | Memverifikasi status online server backend, menampilkan daftar endpoint aktif, dan tautan dokumentasi OpenAPI. | [main.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/main.py) | **🟢 Rendah** |
-| **Issue Summarization** | `POST /api/issue-summary` | Menerima teks keluhan sistem panjang, memprosesnya melalui AI, dan mengembalikan ringkasan satu kalimat. | [api/routes.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/api/routes.py)<br>[workflows/issue_summary.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/workflows/issue_summary.py)<br>[services/ai_service.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/services/ai_service.py) | **🟡 Sedang** |
-| **Audit Logs / Work History** | `GET /api/history` | Mengambil dan menampilkan seluruh daftar riwayat keluhan beserta ringkasan AI yang telah sukses tersimpan di database lokal. | [api/routes.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/api/routes.py)<br>[storage/local_storage.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/storage/local_storage.py) | **🟢 Rendah** |
+| **Welcome / Health Check** | `GET /` | Memverifikasi status online server backend, menampilkan daftar endpoint aktif, dan tautan dokumentasi OpenAPI. | `main.py` | **🟢 Rendah** |
+| **Legacy Issue Summary** | `POST /api/issue-summary` | Menjaga kompatibilitas client lama dengan response `summary` + `request_id`. | `api/routes.py`<br>`workflows/issue/summary.py`<br>`services/ai_service.py` | **🟡 Sedang** |
+| **Issue Summary** | `POST /api/issue/summary` | Menerima teks issue, memprosesnya melalui AI, dan mengembalikan ringkasan satu string. | `api/routes.py`<br>`workflows/issue/summary.py`<br>`prompts/issue/summary.txt` | **🟡 Sedang** |
+| **Issue Categorization** | `POST /api/issue/categorize` | Mengklasifikasikan issue ke kategori operasional tertentu. | `api/routes.py`<br>`workflows/issue/categorize.py`<br>`prompts/issue/categorize.txt` | **🟡 Sedang** |
+| **Issue Severity** | `POST /api/issue/severity` | Menghasilkan tingkat keparahan issue yang ternormalisasi. | `api/routes.py`<br>`workflows/issue/severity.py`<br>`prompts/issue/severity.txt` | **🟡 Sedang** |
+| **Issue Tags** | `POST /api/issue/tags` | Mengekstrak tag-tag penting dari issue. | `api/routes.py`<br>`workflows/issue/tags.py`<br>`prompts/issue/tags.txt` | **🟡 Sedang** |
+| **Issue Sentiment** | `POST /api/issue/sentiment` | Mengklasifikasikan sentimen issue. | `api/routes.py`<br>`workflows/issue/sentiment.py`<br>`prompts/issue/sentiment.txt` | **🟡 Sedang** |
+| **Audit Logs / Work History** | `GET /api/history` | Mengambil daftar riwayat summary issue yang tersimpan di storage lokal. | `api/routes.py`<br>`storage/local_storage.py` | **🟢 Rendah** |
 
 ---
 
@@ -21,9 +26,9 @@ Berikut adalah katalog endpoint API aktif yang dapat dikonsumsi oleh client saat
 
 Di luar kode utama, berikut adalah indeks berkas konfigurasi penting sistem:
 
-* **[prompts/loader.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/prompts/loader.py)**: Mengatur pembacaan teks file instruksi prompt LLM secara non-blocking.
-* **`prompts/issue_summary.txt`**: Teks template prompt LLM yang berisi instruksi tegas agar AI meringkas keluhan menjadi satu kalimat bahasa Inggris yang padat tanpa basa-basi.
-* **[storage/history.json](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/storage/history.json)**: Berkas database log JSON lokal yang mencatat `id`, `timestamp`, `original_text`, dan `summary` untuk setiap keluhan yang diproses.
+* **`prompts/loader.py`**: Mengatur pembacaan dan formatting template prompt.
+* **`prompts/issue/*.txt`**: Template prompt per fitur issue seperti summary, categorize, severity, tags, dan sentiment.
+* **`storage/history.json`**: Berkas database log JSON lokal yang mencatat `id`, `request_id`, `timestamp`, `original_text`, dan `summary`.
 
 ---
 
@@ -36,7 +41,7 @@ Untuk membantu perencanaan arsitektur di masa depan, berikut adalah analisis ket
 | **Database File JSON** <br>(`storage/history.json`) | Kinerja pembacaan/penulisan akan melambat drastis saat ukuran log mencapai ribuan catatan. | **Kuning (Sedang)** | Migrasi ke database relasional seperti **PostgreSQL** atau database dokumen seperti **MongoDB**. |
 | **Local File I/O Synchronous** | Potensi terjadinya *race condition* (data tabrakan/tertimpa) saat banyak client memproses keluhan secara bersamaan. | **Merah (Tinggi)** | Gunakan library file asinkron (seperti `aiofiles`) atau gunakan database transaksional ACID. |
 | **Single Active AI Service** | Sangat bergantung pada local Ollama (`qwen2.5:1.5b`). Jika engine mati atau overload, server mengembalikan error 500. | **Kuning (Sedang)** | Implementasi mekanisme fallback otomatis (seperti beralih ke **Google Gemini API** atau **OpenAI API** jika local Ollama mati). |
-| **No Character Validation** | Mengirim keluhan dengan ukuran karakter yang luar biasa panjang dapat membebani local model dan menyebabkan timeout server. | **Kuning (Sedang)** | Pasang validasi panjang karakter input maksimal (misal: 4000 karakter) di skema Pydantic. |
+| **Input Length Constraint** | Request dibatasi hingga 4000 karakter, sehingga input di atas batas akan ditolak. | **Kuning (Sedang)** | Pertahankan limit ini atau tambahkan preprocessing/chunking jika kebutuhan berubah. |
 
 ---
 
@@ -51,8 +56,8 @@ graph LR
 ```
 
 1. **Tahap 1 (Stability & Resiliency)**:
-   - Pasang validasi `max_length` pada field `text` di skema `IssueRequest` di [api/routes.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/api/routes.py).
-   - Buat helper fallback di [services/ai_service.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/services/ai_service.py) yang secara otomatis mengalihkan beban kerja ke Google Gemini API jika server local Ollama gagal dihubungi.
+   - Pertahankan validasi `max_length` pada field `text` di skema `IssueRequest` di `api/routes.py`.
+   - Perkuat observability dan fallback behavior di subsystem `services/ai/` jika provider utama gagal.
 2. **Tahap 2 (Data Integrity)**:
    - Ganti mock `storage/local_storage.py` dengan adaptor database nyata. Gunakan SQLAlchemy atau Tortoise-ORM untuk berkomunikasi secara asinkron dengan database PostgreSQL.
 3. **Tahap 3 (Performance Optimization)**:

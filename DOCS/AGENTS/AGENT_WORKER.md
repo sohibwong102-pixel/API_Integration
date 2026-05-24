@@ -10,7 +10,7 @@ TASK
 - menentukan integration strategy
 - menjaga ecosystem tetap modular
 
-# ORCHESTRATOR
+# MANAGER_ORCHESTRATOR
 
 TASK
 
@@ -70,7 +70,7 @@ TASK
 - menjaga concise & deterministic output
 - mengikuti prompt governance existing
 
-# PROMPT_REVIEWER
+# REVIEWER_PROMPT_ENDPOINT
 
 TASK
 

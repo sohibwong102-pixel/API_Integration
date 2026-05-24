@@ -1,5 +1,3 @@
-# <!-- file ini digunakan sebagai penunjang kedisiplinan BACKEND_EXECUTOR -->
-
 ===========================================================================
 
 # DO_NOT_TOUCH

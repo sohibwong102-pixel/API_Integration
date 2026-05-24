@@ -23,6 +23,7 @@ memory system buat seluruh ecosystem orchestration 😭🔥
 ```
 
 Disini semua:
+
 - workflow
 - architecture
 - doctrine
@@ -54,11 +55,11 @@ DOCS/
 ├── AGENTS/         → ecosystem & role agent
 ├── DOCTRINE/       → aturan sacred goblin engineering
 ├── GLOBAL/         → global architecture knowledge
-├── HISTORY/        → jejak evolusi & archaeology system
+├── GUIDE_PROJECT/
 ├── ARCHITECTURE/   → otak orchestration
-├── FLOWS/          → alur workflow & pipeline
+├── WORKFLOWS/      → alur workflow & pipeline
 ├── PLAYBOOKS/      → buku survival engineering
-└── EXPERIMENTS/    → laboratorium kegoblinan legal
+└── EXPERIMENTS/  → laboratorium kegoblinan legal
 ```
 
 ---
@@ -66,6 +67,7 @@ DOCS/
 # 🤖 AGENTS/
 
 Berisi:
+
 - role AI
 - responsibility
 - execution boundary
@@ -84,6 +86,7 @@ mengurangi perang saudara antar agent 😭🔥
 Tempat prinsip engineering disimpan.
 
 Bukan sekadar:
+
 - tips
 - note random
 - pemikiran jam 2 pagi
@@ -99,6 +102,7 @@ sacred goblin engineering law 😎🔥
 # 🏗️ ARCHITECTURE/
 
 Berisi:
+
 - request lifecycle
 - routing system
 - fallback logic
@@ -114,11 +118,12 @@ future self sering lupa dulu bikin sistem apa 😭
 
 ---
 
-# 🔄 FLOWS/
+# 🔄 WORKFLOWS/
 
 Tempat visualisasi workflow.
 
 Contoh:
+
 - prompt pipeline
 - review chain
 - execution flow
@@ -126,6 +131,7 @@ Contoh:
 - retry & recovery flow
 
 Tujuan:
+
 - onboarding lebih gampang
 - debugging lebih waras
 - orchestration lebih kebaca
@@ -137,6 +143,7 @@ Tujuan:
 Operational survival manual.
 
 Contoh:
+
 - cara tambah provider
 - cara debug routing
 - cara rollback system
@@ -156,6 +163,7 @@ Karena engineering tanpa playbook:
 Tempat eksperimen legal.
 
 Isi:
+
 - prototype
 - ide aneh
 - test workflow
@@ -186,6 +194,7 @@ Tapi:
 # 🚀 Tujuan Akhir
 
 Membangun:
+
 - centralized knowledge base
 - orchestration memory system
 - scalable engineering docs

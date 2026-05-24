@@ -8,6 +8,7 @@
 # 🧠 Tujuan
 
 Playbook ini dibuat supaya:
+
 - provider baru bisa ditambah dengan konsisten
 - routing tetap waras
 - abstraction tidak bocor
@@ -29,7 +30,6 @@ Contoh:
 providers/
 ├── openai_provider.py
 ├── gemini_provider.py
-├── ollama_provider.py
 └── openrouter_provider.py
 ```
 
@@ -38,6 +38,7 @@ providers/
 # 🔥 RULE BESAR
 
 Provider:
+
 ```txt
 TIDAK BOLEH 😭🔥
 ```
@@ -48,6 +49,7 @@ TIDAK BOLEH 😭🔥
 - pegang orchestration besar
 
 Provider hanya bertugas:
+
 ```txt
 request masuk 😎
 → kirim ke model 😎
@@ -82,6 +84,7 @@ class DeepseekProvider(BaseAIProvider):
 ```
 
 Tujuan:
+
 - semua provider punya interface sama
 - router tidak chaos 😭🔥
 
@@ -107,6 +110,7 @@ async def generate(self, prompt: str) -> str:
 # 🧠 STEP 4 — Tambahkan Config
 
 Tambahkan:
+
 - API key
 - endpoint
 - timeout
@@ -146,6 +150,7 @@ PROVIDER_REGISTRY = {
 ```
 
 Kalau lupa register:
+
 ```txt
 provider jadi hantu 😭🔥
 ```
@@ -161,6 +166,7 @@ services/ai/router.py
 ```
 
 Contoh:
+
 - fallback priority
 - provider selection
 - retry strategy
@@ -170,6 +176,7 @@ Contoh:
 # 🧪 STEP 7 — Testing
 
 Minimal test:
+
 - provider bisa connect
 - response masuk
 - timeout handling
@@ -211,6 +218,7 @@ api_key = "sk-goblin"
 ```
 
 Gunakan:
+
 - env
 - centralized config
 
@@ -219,6 +227,7 @@ Gunakan:
 ## ❌ Provider beda format sendiri
 
 Semua provider:
+
 ```txt
 harus civilized 😎🔥
 ```

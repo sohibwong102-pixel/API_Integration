@@ -63,11 +63,11 @@ Layanan perantara yang menjembatani server Anda dengan ratusan model AI open-sou
 
 ## 📐 3. Desain Arsitektur Longgar (Loose Coupling) di Proyek Ini
 
-Mengapa kode program di proyek `summary_endpoint` ini sangat mudah dipasangkan penyedia AI baru? Jawabannya adalah karena kita menerapkan prinsip **Loose Coupling** menggunakan **Factory Pattern** dan **Interface Abstraction**:
+Mengapa kode program di proyek ini sangat mudah dipasangkan penyedia AI baru? Jawabannya adalah karena kita menerapkan prinsip **Loose Coupling** menggunakan **Factory Pattern** dan **Interface Abstraction**:
 
 ```mermaid
 graph TD
-    Workflow[workflows/issue_summary.py] -->|1. Panggil get_ai_service| Factory[get_ai_service Factory]
+    Workflow[workflows/issue/summary.py] -->|1. Panggil get_ai_service| Factory[get_ai_service Factory]
     Factory -->|2. Kembalikan Instans Aktif| BaseAIService[Interface BaseAIService]
     BaseAIService <|-- QwenLocal[QwenALocalServices - Local AI]
     BaseAIService <|-- GeminiCloud[GeminiCloudServices - Cloud AI]
@@ -76,13 +76,13 @@ graph TD
 ```
 
 * **`BaseAIService`**: Adalah kontrak/antarmuka hukum. Ia menegaskan bahwa *"siapapun penyedia AI-nya, dia WAJIB memiliki fungsi bernama `generate_summary(prompt: str)` yang mengembalikan nilai berupa teks string"*.
-* **Workflow Conductor** (`workflows/issue_summary.py`): Tidak peduli dan tidak ingin tahu apakah AI yang digunakan adalah Ollama lokal atau Gemini Cloud. Dia hanya memanggil fungsi `ai_service.generate_summary(prompt)` dan menerima hasilnya!
+* **Workflow Conductor** (`workflows/issue/summary.py`): Tidak peduli dan tidak ingin tahu apakah AI yang digunakan adalah Ollama lokal atau Gemini Cloud. Dia hanya memanggil fungsi `ai_service.generate_summary(prompt)` dan menerima hasilnya.
 
 ---
 
 ## 🛠️ 4. Panduan Integrasi Kode (Step-by-Step Integration Guide)
 
-Berikut adalah cetak biru (*blueprint*) kode implementasi untuk masing-masing penyedia AI di dalam berkas [services/ai_service.py](file:///home/shobixlinuxdev/DEV_GLOBAL/Projects/summary_endpoint/services/ai_service.py):
+Berikut adalah cetak biru (*blueprint*) konsep integrasi untuk masing-masing penyedia AI di layer `services/ai/` dan gateway `services/ai_service.py`:
 
 ### 💻 Opsi A: Integrasi Local AI (Ollama)
 Ini adalah implementasi aktif saat ini, memanfaatkan endpoint lokal Ollama yang berjalan secara gratis di komputer Anda:
