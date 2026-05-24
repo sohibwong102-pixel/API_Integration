@@ -1,37 +1,165 @@
-# DO_NOT_TOUCH.md
+🚫 DO_NOT_TOUCH.md
 
-Daftar area sensitif yang tidak boleh dimodifikasi sembarangan karena berisiko merusak stabilitas backend atau kontrak publiknya.
+«area sacred yang jangan disentuh sembarangan 😭🔥
 
-## Critical
+file-file disini punya dampak besar terhadap:
 
-1. **`core/error_handlers.py`**
-   - **Alasan**: Sumber utama kontrak error response publik.
-   - **Risiko**: Perubahan sembarangan dapat merusak stabilitas `error.code` untuk consumer.
+- stability
+- public contract
+- orchestration lifecycle
+- observability
+- compatibility»
 
-2. **`storage/local_storage.py`**
-   - **Alasan**: Satu-satunya adapter resmi untuk history JSON lokal.
-   - **Risiko**: Kesalahan logika dapat menyebabkan data history korup atau hilang.
+---
 
-3. **`storage/history.json`**
-   - **Alasan**: Berkas persistensi lokal aktif.
-   - **Risiko**: Edit manual yang tidak valid dapat membuat pembacaan history gagal.
+🔴 CRITICAL AREA
 
-## High Risk
+⚠️ "core/error_handlers.py"
 
-1. **`main.py`**
-   - **Alasan**: Entry point aplikasi, inisialisasi config, middleware, router, dan error handler.
-   - **Risiko**: Salah modifikasi bisa membuat server gagal start atau observability rusak.
+Kenapa Sensitif?
 
-2. **`api/routes.py`**
-   - **Alasan**: Memegang kontrak endpoint, schema request/response, dan compatibility alias.
-   - **Risiko**: Perubahan tanpa sinkronisasi bisa mematahkan client existing.
+File ini adalah:
 
-3. **`services/ai/router.py`** dan **`services/ai/registry.py`**
-   - **Alasan**: Mengatur routing provider dan fallback provider.
-   - **Risiko**: Salah konfigurasi dapat membuat seluruh panggilan AI gagal.
+sumber utama kontrak error response publik 😭🔥
 
-## Panduan Modifikasi
+Kalau diubah sembarangan:
 
-- Jangan ubah file di atas tanpa memahami dampaknya ke API consumer.
-- Jika kontrak error berubah, `README.md` dan `DOCS/HISTORY/` harus ikut diperbarui.
-- Jika storage disentuh, validasi hasil baca/tulis setelah perubahan.
+- "error.code" bisa drift
+- automation client bisa gagal parsing
+- observability mulai tidak konsisten
+- API consumer mulai chaos diam diam 😭🔥
+
+---
+
+⚠️ "storage/local_storage.py"
+
+Kenapa Sensitif?
+
+Satu-satunya adapter resmi untuk history JSON lokal.
+
+Kesalahan kecil bisa menyebabkan:
+
+- history korup
+- data hilang
+- debugging kehilangan jejak
+- workflow tracing mulai gelap 😭🔥
+
+---
+
+⚠️ "storage/history.json"
+
+Kenapa Sensitif?
+
+Berkas persistensi lokal aktif.
+
+Edit manual yang salah bisa bikin:
+
+history tidak bisa dibaca lagi 😭🔥
+
+---
+
+🟠 HIGH RISK AREA
+
+⚠️ "main.py"
+
+Area Tanggung Jawab
+
+- startup lifecycle
+- middleware
+- router registration
+- observability
+- request lifecycle
+
+Risiko
+
+Salah modifikasi bisa menyebabkan:
+
+- server gagal start
+- tracing rusak
+- middleware behavior aneh
+- request lifecycle bocor 😭🔥
+
+---
+
+⚠️ "api/routes.py"
+
+Area Tanggung Jawab
+
+- endpoint contract
+- request schema
+- response schema
+- compatibility alias
+
+Risiko
+
+Perubahan kecil bisa mematahkan:
+
+- client existing
+- automation
+- backward compatibility
+- integration workflow 😭🔥
+
+---
+
+⚠️ "services/ai/router.py"
+
+⚠️ "services/ai/registry.py"
+
+Area Tanggung Jawab
+
+- provider routing
+- fallback orchestration
+- provider registry
+
+Risiko
+
+Kalau salah konfigurasi:
+
+seluruh panggilan AI bisa gagal bersamaan 😭🔥
+
+---
+
+📌 PANDUAN MODIFIKASI
+
+✅ Sebelum Mengubah File Sensitif
+
+Pastikan memahami:
+
+- impact ke client
+- impact ke workflow
+- impact ke observability
+- impact ke compatibility
+
+---
+
+✅ Jika Error Contract Berubah
+
+WAJIB update:
+
+- "README.md"
+- "DOCS/HISTORY/"
+
+Karena:
+
+public contract bukan area coba-coba 😭🔥
+
+---
+
+✅ Jika Storage Disentuh
+
+Lakukan validasi:
+
+- read
+- write
+- corruption check
+- history recovery
+
+---
+
+❌ Jangan Refactor Besar Hanya Karena:
+
+“kelihatan lebih rapi”
+
+Karena:
+
+rapi belum tentu stabil 😭🔥
