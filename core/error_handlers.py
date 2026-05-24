@@ -21,13 +21,14 @@ Notes:
 """
 
 def _build_error_context(request: Request) -> Dict[str, Any]:
+    request_id = getattr(request.state, "request_id", None) or request.headers.get("x-request-id")
     # Structured context untuk observability 5xx agar root cause lebih mudah ditelusuri.
     return {
         "method": request.method,
         "path": request.url.path,
         "query": str(request.query_params),
         "client_host": request.client.host if request.client else None,
-        "request_id": request.headers.get("x-request-id"),
+        "request_id": request_id,
     }
 
 def register_error_handlers(app: FastAPI):

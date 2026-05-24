@@ -1,154 +1,162 @@
-# =====================================================================
-# SYSTEM COMPONENT: API ROUTING LAYER (LAPISAN ANTARMUKA / ENDPOINT)
-# =====================================================================
-# Deskripsi:
-# Berkas ini mendefinisikan rute/endpoint API yang bisa diakses oleh client
-# (seperti Postman, web frontend, aplikasi mobile, atau layanan pihak ketiga). 
-# Lapisan ini bertugas menerima request, memvalidasi datanya, mengoper data 
-# tersebut ke "Workflow" untuk diproses, lalu membalas dengan format yang rapi.
-#
-# Di sini kita menggunakan Pydantic untuk memastikan data input/output aman & tervalidasi.
-# =====================================================================
+from typing import List, Optional
 
-import uuid
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Request, status
 from pydantic import BaseModel, Field, field_validator
-from typing import List, Dict, Any, Optional
 
-# Import workflow bisnis dan storage lokal
-# Alur: Rute API akan memanggil Workflow, bukan langsung ke AI Service atau Storage.
-from workflows import IssueSummaryWorkflow
 from storage import LocalStorage
+from workflows import (
+    IssueSummaryWorkflow,
+    IssueCategorizeWorkflow,
+    IssueSeverityWorkflow,
+    IssueTagsWorkflow,
+    IssueSentimentWorkflow,
+)
 
-# Inisialisasi APIRouter dari FastAPI
-# APIRouter bertindak sebagai "pengelompok rute". Ini membuat kode kita rapi
-# karena rute-rute terkait dikelompokkan ke file tersendiri.
 router = APIRouter()
 
-# =====================================================================
-# 📋 SKEMA PYDANTIC (SISTEM VALIDASI DATA OTOMATIS)
-# =====================================================================
-# Penjelasan untuk Pemula:
-# Pydantic adalah library Python untuk validasi tipe data.
-# Saat client mengirim data JSON ke API kita, Pydantic memastikan:
-# 1. Apakah field yang wajib (required) sudah dikirim?
-# 2. Apakah tipe datanya cocok (misal string, integer)?
-# Jika tidak cocok, Pydantic otomatis membalas dengan error 422 (Unprocessable Entity).
 
 class IssueRequest(BaseModel):
-    """
-    Skema data input untuk POST /api/issue-summary.
-    Client wajib mengirim JSON dengan format:
-    {
-       "text": "isi keluhan di sini..."
-    }
-    """
     text: str = Field(
-        ..., # Simbol '...' (ellipsis) menandakan field ini WAJIB diisi, tidak boleh absen
+        ...,
         min_length=1,
         max_length=4000,
-        description="Deskripsi teks keluhan/laporan isu sistem yang ingin dirangkum.",
-        examples=["backend deploy gagal setelah update auth middleware"]
+        description="Issue text from client.",
+        examples=["backend deploy failed after middleware update"],
     )
 
     @field_validator("text")
     @classmethod
     def validate_text(cls, value: str) -> str:
-        # Lakukan whitespace stripping sebelum validation final
         cleaned = value.strip()
-
         if not cleaned:
-            raise ValueError(
-                "Text input cannot be empty."
-            )
-
+            raise ValueError("Text input cannot be empty.")
         return cleaned
 
 
-class IssueResponse(BaseModel):
-    """
-    Skema data output untuk response POST /api/issue-summary.
-    Menjamin client hanya akan menerima JSON dengan format terstruktur:
-    {
-       "summary": "Ringkasan hasil AI dalam satu kalimat...",
-       "request_id": "unique-uuid4-hex"
-    }
-    """
-    summary: str = Field(
-        ..., 
-        description="Hasil ringkasan satu kalimat bahasa Inggris dari AI.",
-        examples=["Deployment issue related to auth middleware conflict."]
-    )
-    request_id: str = Field(
-        ...,
-        description="Request ID unik untuk observabilitas/tracing.",
-        examples=["4a496f8c8cb64c20b4d455480741893f"]
-    )
+class SummaryResponse(BaseModel):
+    summary: str
+
+
+class LegacySummaryResponse(BaseModel):
+    summary: str
+    request_id: str
+
+
+class CategoryResponse(BaseModel):
+    category: str
+
+
+class SeverityResponse(BaseModel):
+    severity: str
+
+
+class TagsResponse(BaseModel):
+    tags: List[str]
+
+
+class SentimentResponse(BaseModel):
+    sentiment: str
 
 
 class HistoryRecordResponse(BaseModel):
-    """
-    Skema data output untuk tiap entri data riwayat pada GET /api/history.
-    Mendefinisikan tipe data yang akan dikembalikan untuk setiap catatan log di database.
-    """
-    id: int = Field(..., description="ID unik dari riwayat keluhan (auto-increment)")
-    request_id: Optional[str] = Field(None, description="Request ID unik untuk observabilitas/tracing (opsional untuk kompatibilitas mundur)")
-    timestamp: str = Field(..., description="Waktu kapan isu ini diproses (Format ISO)")
-    original_text: str = Field(..., description="Teks keluhan asli dari pengguna")
-    summary: str = Field(..., description="Hasil ringkasan dari AI")
+    id: int = Field(..., description="Auto-increment local record id")
+    request_id: Optional[str] = Field(None, description="Unique request id")
+    timestamp: str = Field(..., description="Record creation time in ISO format")
+    original_text: str = Field(..., description="Original issue text")
+    summary: str = Field(..., description="Stored issue summary")
 
 
-# =====================================================================
-# 🛠️ POST ENDPOINT: /issue-summary
-# =====================================================================
+def _resolve_request_id(request: Request) -> str:
+    request_id = getattr(request.state, "request_id", None)
+    if not request_id:
+        # Safety guard untuk memastikan lifecycle tidak pernah kosong.
+        raise RuntimeError("Request context missing request_id")
+    return request_id
+
+
+def _execute_issue_summary(text: str, request_id: str) -> tuple[str, str]:
+    summary = IssueSummaryWorkflow.execute(text, request_id=request_id)
+    return summary, request_id
+
+
 @router.post(
-    "/issue-summary", 
-    response_model=IssueResponse, 
+    "/issue-summary",
+    response_model=LegacySummaryResponse,
     status_code=status.HTTP_200_OK,
-    summary="Ringkas laporan keluhan sistem",
-    description="Endpoint ini menerima teks deskripsi issue, menjalankannya melalui workflow, dan mengembalikan summary satu kalimat."
+    summary="Legacy alias - summarize issue",
 )
-def create_issue_summary(payload: IssueRequest):
-    """
-    Fungsi penanganan utama saat user memanggil POST /api/issue-summary.
-    
-    [ALUR LOGIKA POST REQUEST]:
-    1. User mengirim JSON -> Pydantic `payload` (IssueRequest) memvalidasi strukturnya.
-    2. Program membuat request_id unik di boundary.
-    3. Program memanggil `IssueSummaryWorkflow.execute` (Otak Alur Bisnis) dengan request_id.
-    4. Workflow memproses dan mengembalikan kamus (dictionary) hasil.
-    5. Program mengembalikan hasil tersebut dibungkus skema `IssueResponse`.
-    """
-    request_id = uuid.uuid4().hex
-    # ─── LANGKAH 1: Eksekusi Alur Kerja (Workflow) ───
-    result = IssueSummaryWorkflow.execute(payload.text, request_id=request_id)
-    
-    # ─── LANGKAH 2: Kembalikan Response ke Client ───
-    return IssueResponse(
-        summary=result["summary"],
-        request_id=request_id
-    )
+def summarize_issue_legacy(payload: IssueRequest, request: Request):
+    # Compatibility adapter: menjaga contract lama agar client existing tidak break.
+    request_id = _resolve_request_id(request)
+    summary, request_id = _execute_issue_summary(payload.text, request_id=request_id)
+    return LegacySummaryResponse(summary=summary, request_id=request_id)
 
 
-# =====================================================================
-# 📖 GET ENDPOINT: /history
-# =====================================================================
+@router.post(
+    "/issue/summary",
+    response_model=SummaryResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Summarize issue",
+)
+def summarize_issue(payload: IssueRequest, request: Request):
+    request_id = _resolve_request_id(request)
+    summary, _request_id = _execute_issue_summary(payload.text, request_id=request_id)
+    return SummaryResponse(summary=summary)
+
+
+@router.post(
+    "/issue/categorize",
+    response_model=CategoryResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Categorize issue",
+)
+def categorize_issue(payload: IssueRequest, request: Request):
+    request_id = _resolve_request_id(request)
+    category = IssueCategorizeWorkflow.execute(payload.text, request_id=request_id)
+    return CategoryResponse(category=category)
+
+
+@router.post(
+    "/issue/severity",
+    response_model=SeverityResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Classify issue severity",
+)
+def severity_issue(payload: IssueRequest, request: Request):
+    request_id = _resolve_request_id(request)
+    severity = IssueSeverityWorkflow.execute(payload.text, request_id=request_id)
+    return SeverityResponse(severity=severity)
+
+
+@router.post(
+    "/issue/tags",
+    response_model=TagsResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Extract issue tags",
+)
+def tags_issue(payload: IssueRequest, request: Request):
+    request_id = _resolve_request_id(request)
+    tags = IssueTagsWorkflow.execute(payload.text, request_id=request_id)
+    return TagsResponse(tags=tags)
+
+
+@router.post(
+    "/issue/sentiment",
+    response_model=SentimentResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Classify issue sentiment",
+)
+def sentiment_issue(payload: IssueRequest, request: Request):
+    request_id = _resolve_request_id(request)
+    sentiment = IssueSentimentWorkflow.execute(payload.text, request_id=request_id)
+    return SentimentResponse(sentiment=sentiment)
+
+
 @router.get(
-    "/history", 
+    "/history",
     response_model=List[HistoryRecordResponse],
     status_code=status.HTTP_200_OK,
-    summary="Dapatkan riwayat ringkasan isu",
-    description="Endpoint ini membaca seluruh database log JSON lokal dan mengembalikan daftar riwayat isu yang sudah diproses."
+    summary="Get issue summary history",
 )
 def get_issue_history():
-    """
-    Fungsi penanganan utama saat user memanggil GET /api/history.
-    
-    [ALUR LOGIKA GET REQUEST]:
-    1. User meminta data riwayat.
-    2. Program memanggil LocalStorage untuk mengambil list dari berkas `history.json`.
-    3. List data JSON tersebut dikembalikan dan divalidasi otomatis oleh List[HistoryRecordResponse].
-    """
-    # Membaca data langsung dari layer LocalStorage
     return LocalStorage.get_all_records()
-

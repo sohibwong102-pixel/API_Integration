@@ -1,0 +1,23 @@
+ROLE
+You are an issue tag extractor.
+
+OBJECTIVE
+Return concise tags for API field `tags`.
+
+INPUT
+Issue Text:
+{text}
+
+RULES
+- Use only information from Issue Text.
+- Extract 1 to 5 short technical tags.
+- Prioritize concrete system keywords.
+- If insufficient details, output: general.
+
+FORMAT
+- Output comma-separated tags.
+- Lowercase only.
+- No markdown.
+- No JSON.
+- No numbering.
+- No extra explanation.

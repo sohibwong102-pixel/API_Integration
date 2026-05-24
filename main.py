@@ -37,10 +37,15 @@
 # =====================================================================
 
 import uvicorn
-from fastapi import FastAPI
+import logging
+import time
+import uuid
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from api import router as api_router
 from core import settings, register_error_handlers
+
+logger = logging.getLogger("app.request")
 
 # 🛡️ VALIDASI STARTUP KRITIS (Fail Fast)
 # Memastikan semua variabel lingkungan yang wajib untuk provider aktif telah dikonfigurasi dengan benar.
@@ -79,6 +84,34 @@ app.add_middleware(
     allow_methods=["*"], # Mengizinkan semua metode HTTP (GET, POST, PUT, DELETE, dll)
     allow_headers=["*"], # Mengizinkan semua header HTTP kustom
 )
+
+
+@app.middleware("http")
+async def request_context_middleware(request: Request, call_next):
+    # Gunakan request_id dari client jika ada; jika tidak, generate di API boundary.
+    request_id = request.headers.get("x-request-id") or uuid.uuid4().hex
+    request.state.request_id = request_id
+
+    start = time.perf_counter()
+    response = await call_next(request)
+    duration_ms = round((time.perf_counter() - start) * 1000, 2)
+
+    # Expose request id secara konsisten untuk correlation di sisi client.
+    response.headers["X-Request-ID"] = request_id
+
+    # Structured access log ringan untuk tracing & observability.
+    logger.info(
+        "request_completed",
+        extra={
+            "event": "request_completed",
+            "request_id": request_id,
+            "method": request.method,
+            "path": request.url.path,
+            "status_code": response.status_code,
+            "duration_ms": duration_ms,
+        },
+    )
+    return response
 
 # =====================================================================
 # 🔀 REGISTRASI ROUTER MODULAR
@@ -130,4 +163,3 @@ if __name__ == "__main__":
         port=settings.APP_PORT, 
         reload=settings.APP_ENV == "development"  # reload otomatis aktif jika di mode development
     )
-
