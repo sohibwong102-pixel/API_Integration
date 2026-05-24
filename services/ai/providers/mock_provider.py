@@ -1,31 +1,25 @@
-import re
+import os
 from services.ai.base import BaseProvider
 
 class MockProvider(BaseProvider):
     """
-    Mock AI Provider untuk simulasi respons LLM saat masa development secara gratis & offline.
+    Mock AI Provider untuk kebutuhan testing/development offline yang deterministik.
+
+    Catatan arsitektur:
+    - Provider ini sengaja TIDAK melakukan parsing struktur prompt internal.
+    - Tujuannya mencegah drift saat template prompt berevolusi.
     """
+    DEFAULT_FIXTURE_SUMMARY = (
+        "Mock summary for testing: operational issue detected and requires backend investigation."
+    )
+
     def generate(self, prompt: str) -> str:
-        # Ekstraksi keluhan asli dari prompt menggunakan regex
-        match = re.search(r"Issue Text:\s*(.*?)\n\nSummary:", prompt, re.DOTALL | re.IGNORECASE)
-        
-        if match:
-            issue_text = match.group(1).strip().lower()
-        else:
-            issue_text = prompt.lower()
-            
-        # Keyword-matching logic untuk simulasi kecerdasan buatan
-        if "auth" in issue_text or "middleware" in issue_text:
-            return "Deployment issue related to auth middleware conflict."
-            
-        elif "db" in issue_text or "database" in issue_text or "koneksi" in issue_text:
-            return "Database connection timeout preventing successful service startup."
-            
-        elif "gagal" in issue_text or "failed" in issue_text or "deploy" in issue_text:
-            return "CI/CD deployment pipeline failure due to build environment setup."
-            
-        elif "api" in issue_text or "route" in issue_text or "endpoint" in issue_text:
-            return "API gateway routing mismatch resulting in HTTP 404 errors."
-            
-        else:
-            return f"Operational interruption detected in system workflow: '{issue_text[:30]}...'."
+        # Opsi override fixture via env untuk skenario test tertentu tanpa ubah kode.
+        fixture = os.getenv("MOCK_SUMMARY_FIXTURE", self.DEFAULT_FIXTURE_SUMMARY).strip()
+
+        # Fallback aman jika env diisi kosong/whitespace.
+        if not fixture:
+            return self.DEFAULT_FIXTURE_SUMMARY
+
+        # Mengembalikan satu string summary deterministik (provider-agnostic terhadap format prompt).
+        return fixture
